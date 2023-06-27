@@ -25,7 +25,7 @@
         "php": "~8.0.0 || ~8.1.0 || ~8.2.0"
     },
     "scripts": {
-        "pre-operations-exec": "Oloma\\Php\\Composer\\LicenseChecker::check"
+        "pre-package-install": "Oloma\\Php\\Composer\\LicenseChecker::check"
     }
 
 }
