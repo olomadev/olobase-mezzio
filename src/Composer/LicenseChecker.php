@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Oloma\Php\Composer;
 
 use RuntimeException;
-use Composer\Installer\PackageEvent;
-// use Composer\Installer\InstallerEvent;
+// use Composer\Installer\PackageEvent;
+use Composer\Installer\InstallerEvent;
 
 /**
  * @author Oloma <support@oloma.dev>
@@ -18,7 +18,7 @@ final class LicenseChecker
     const SERVER = 'https://license.oloma.dev';
     const PATH = '/check.php?key=';
 
-    public static function check(PackageEvent $event)
+    public static function check(InstallerEvent $event)
     {
         $ROOT = dirname(dirname(__DIR__));
         if (! file_exists($ROOT."/config/autoload/mezzio.global.php")) {
