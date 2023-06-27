@@ -1,0 +1,31 @@
+{
+    "name": "oloma/php",
+    "type": "library",
+    "description": "",
+    "license": "MIT",
+    "keywords": [
+        "olomadev",
+        "oloma",
+        "vuetify",
+        "vue.js",
+        "admin"
+    ],
+    "homepage": "https://oloma.dev",
+    "autoload": {
+        "psr-4": {
+            "Oloma\\Php\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": { 
+            "": ""
+        }
+    },
+    "require": {
+        "php": "~8.0.0 || ~8.1.0 || ~8.2.0"
+    },
+    "scripts": {
+        "pre-operations-exec": "Oloma\\Php\\Composer\\LicenseChecker::check"
+    }
+
+}
