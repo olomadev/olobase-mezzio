@@ -16,6 +16,8 @@ use Psr\Http\Server\MiddlewareInterface;
 /**
  * @author Oloma <support@oloma.dev>
  *
+ * (c) 2023
+ * 
  * Main handler
  */
 class OlomaHandler implements RequestHandlerInterface
