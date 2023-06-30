@@ -20,13 +20,6 @@ final class License
     private $config;
 
     /**
-     * Laminas Translator
-     * 
-     * @var object
-     */
-    private $translator;
-
-    /**
      * License verification server
      */
     const SERVER = 'https://license.oloma.dev';
@@ -43,29 +36,9 @@ final class License
      * @param  array  $config mezzio.global.php configuration array
      * @return void
      */
-    public function __constructor(array $config)
+    public function __construct($config)
     {
         $this->config = $config;
-    }
-
-    /**
-     * Set translator object 
-     * 
-     * @param TranslatorInterface $translator
-     */
-    public function setTranslator(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
-    /**
-     * Returns to translator object
-     * 
-     * @return TranslatorInterface
-     */
-    private function getTranslator() : TranslatorInterface
-    {
-        return $this->translator;
     }
 
     /**
@@ -105,17 +78,24 @@ final class License
      * 
      * @return int|bool
      */
-	public function activate()
+    public function activate(string $handlerName)
     {   
-        $translator = $this->getTranslator();
-        $lang = $translator->getLocale();
-        var_dump($this->config);
-        die;
-        if (empty($this->config['license_key'])) {
+        if (empty($this->config)) {
+            $handlerFactoryName = $handlerName.'Factory.php';
             throw new RuntimeException(
-                $translator->translate("License key cannot be empty")
+                sprintf(
+                    "You need to set the configuration array from your %s handler factory: %s",
+                    $handlerFactoryName,
+                    'Add this line $handler->setConfig($container->get(\'config\'));'
+                )
             );
         }
+        if (empty($this->config['license_key'])) {
+            throw new RuntimeException(
+                "License key is not defined in your '/config/autoload/mezzio.global.php' file. Please define the license key sent to you"
+            );
+        }
+        $lang = "en";
         $data = array();
         $key = trim($this->config['license_key']);
         $headers = "Accept-language: $lang\r\n";
@@ -135,7 +115,7 @@ final class License
             if (! empty($data['success'])) {
                 $id = shmop_open(Self::getVersionId(), "c", 0644, strlen(1)); // get id for name of cache
                 if ($id) { // return int for data size or boolean false for fail
-                    // shmop_write($id, 1, 0);
+                    shmop_write($id, 1, 0);
                     shmop_close($id);
                     return true;
                 } else {
@@ -146,18 +126,18 @@ final class License
             }
         }
         throw new RuntimeException(
-            $translator->translate("We are unable to establish a connection with the license verification server")
+            "We are unable to establish a connection with the license verification server. Please check your internet connection.",
         );
-	}
+    }
 
     /**
      * Returns to version id
      * 
      * @return string
      */
-	private static function getVersionId()
+    private static function getVersionId()
     {
         return intval(Self::VERSION_ID);
-	}
+    }
 
 }
