@@ -17,8 +17,18 @@ class DefaultUserFactory
 {
     public function __invoke(ContainerInterface $container) : callable
     {
-        return function (string $id, string $identity, array $permissions = [], array $details = []) : UserInterface {
-            return new DefaultUser($id, $identity, $permissions, $details);
+        return function (
+            string $id, 
+            string $identity, 
+            array $permissions = [], 
+            array $details = []
+        ) : UserInterface {
+            return new DefaultUser(
+                $id, 
+                $identity, 
+                $permissions, 
+                $details
+            );
         };
     }
 }

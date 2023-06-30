@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace Oloma\Php;
 
-use Oloma\Php\DataManager;
-use Oloma\Php\ColumnFilters;
-use Oloma\Php\Error\ErrorWrapperInterface;
-use Oloma\Php\Authentication\JwtEncoderInterface;
-
 /**
  * @see ConfigInterface
  */
@@ -35,8 +30,10 @@ class ConfigProvider
     {
         return [
             'factories' => [
-                ErrorWrapperInterface::class => Container\ErrorWrapperFactory::class,
-                JwtEncoderInterface::class => Container\JwtEncoderFactory::class,
+                \Mezzio\Authentication\UserInterface::class => Container\DefaultUserFactory::class,
+                \Mezzio\Authorization\AuthorizationInterface::class => Container\AuthorizationFactory::class,
+                Error\ErrorWrapperInterface::class => Container\ErrorWrapperFactory::class,
+                Authentication\JwtEncoderInterface::class => Container\JwtEncoderFactory::class,
                 ColumnFilters::class => Container\ColumnFiltersFactory::class,
                 DataManager::class => Container\DataManagerFactory::class,
             ],
