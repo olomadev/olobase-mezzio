@@ -90,7 +90,7 @@ final class License
                 )
             );
         }
-        if (empty($this->config['license_key'])) {
+        if (empty($this->config['licenseKey'])) {
             throw new RuntimeException(
                 sprintf(
                     "License key is not defined in your %s file. Please define the license key sent to you",
@@ -100,7 +100,7 @@ final class License
         }
         $lang = "en";
         $data = array();
-        $key = trim($this->config['license_key']);
+        $key = trim($this->config['licenseKey']);
         $headers = "Accept-language: $lang\r\n";
 
         // Create a stream
