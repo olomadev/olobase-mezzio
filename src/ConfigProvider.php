@@ -6,8 +6,8 @@ namespace Oloma\Php;
 
 use Oloma\Php\DataManager;
 use Oloma\Php\ColumnFilters;
-use Oloma\Php\Error\ErrorWrapperInterface as ErrorWrapper;
-use Oloma\Php\Authentication\JwtEncoderInterface as JwtEncoder;
+use Oloma\Php\Error\ErrorWrapperInterface;
+use Oloma\Php\Authentication\JwtEncoderInterface;
 
 /**
  * @see ConfigInterface
@@ -35,8 +35,8 @@ class ConfigProvider
     {
         return [
             'factories' => [
-                ErrorWrapper::class => Container\ErrorWrapperFactory::class,
-                JwtEncoder::class => Container\JwtEncoderFactory::class,
+                ErrorWrapperInterface::class => Container\ErrorWrapperFactory::class,
+                JwtEncoderInterface::class => Container\JwtEncoderFactory::class,
                 ColumnFilters::class => Container\ColumnFiltersFactory::class,
                 DataManager::class => Container\DataManagerFactory::class,
             ],

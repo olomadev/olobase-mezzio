@@ -48,7 +48,12 @@ final class DefaultUser implements UserInterface
      * @param array  $roles     user roles for frontend
      * @param array  $details   extra details
      */
-    public function __construct(string $id, string $identity, array $roles = [], array $details = [])
+    public function __construct(
+        string $id, 
+        string $identity, 
+        array $roles = [], 
+        array $details = []
+    )
     {
         $this->id = $id;
         $this->identity = $identity;

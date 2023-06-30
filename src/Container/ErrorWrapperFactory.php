@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Container;
+namespace Oloma\Php\Container;
 
 use Oloma\Php\Error\ErrorWrapper;
 use Psr\Container\ContainerInterface;
