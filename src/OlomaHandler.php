@@ -81,6 +81,10 @@ class OlomaHandler implements RequestHandlerInterface
         }
         $reflection = new ReflectionClass($this);
         $handlerName = $reflection->getName();
+        $license = new License($this->config);
+        if (! $license->check()) {
+            $license->activate($handlerName);
+        }
         if ($reflection->hasMethod($method)) {
             $reflectionParameters = $reflection->getMethod($method)->getParameters();
             if (empty($reflectionParameters)) {

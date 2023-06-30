@@ -17,7 +17,7 @@ final class License
      * Configuration variables
      * @var array
      */
-    private $config;
+    private $config = array();
 
     /**
      * License verification server
@@ -36,7 +36,7 @@ final class License
      * @param  array  $config mezzio.global.php configuration array
      * @return void
      */
-    public function __construct($config)
+    public function __construct($config = array())
     {
         $this->config = $config;
     }
