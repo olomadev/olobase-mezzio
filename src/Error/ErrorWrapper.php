@@ -21,9 +21,13 @@ class ErrorWrapper implements ErrorWrapperInterface
      * 
      * @param TranslatorInterface $translator
      */
-    public function __construct(Translator $translator)
+    public function __construct(
+        array $config, 
+        Translator $translator
+    )
     {
         $this->translator = $translator;
+        $this->config = $config;
     }
 
     /**

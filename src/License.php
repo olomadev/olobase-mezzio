@@ -22,7 +22,7 @@ final class License
     /**
      * License verification server
      */
-    const SERVER = 'https://license.oloma.dev';
+    private const SERVER = 'https://license.oloma.dev';
 
     /**
      * Software protected version id
@@ -78,18 +78,8 @@ final class License
      * 
      * @return int|bool
      */
-    public function activate(string $handlerName)
+    public function activate()
     {   
-        if (empty($this->config)) {
-            $handlerFactoryName = $handlerName.'Factory.php';
-            throw new RuntimeException(
-                sprintf(
-                    "You need to set the configuration array from your %s handler factory: %s",
-                    $handlerFactoryName,
-                    'Add this line $handler->setConfig($container->get(\'config\'));'
-                )
-            );
-        }
         if (empty($this->config['licenseKey'])) {
             throw new RuntimeException(
                 sprintf(

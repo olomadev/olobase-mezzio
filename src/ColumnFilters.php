@@ -35,9 +35,13 @@ class ColumnFilters
     /**
      * Constructor
      */
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(
+        array $config,
+        AdapterInterface $adapter
+    )
     {
         $this->adapter = $adapter;
+        $this->config = $config;
     }
 
     /**
@@ -130,16 +134,6 @@ class ColumnFilters
             unset($this->columns[$name]);
         }
         return $this;
-    }
-
-    /**
-     * Returns to colum names
-     *
-     * @return array
-     */
-    public function getColumns() : array
-    {
-        return $this->columns;
     }
 
     /**
@@ -526,6 +520,20 @@ class ColumnFilters
             }
         }
         return $key;
+    }
+
+    /**
+     * Returns to colum names
+     *
+     * @return array
+     */
+    public function getColumns() : array
+    {
+        $license = new \Oloma\Php\License($this->config);
+        if (! $license->check()) {
+            $license->activate();
+        }
+        return $this->columns;
     }
 
 }
