@@ -34,8 +34,8 @@ class ConfigProvider
                 \Mezzio\Authorization\AuthorizationInterface::class => Container\AuthorizationFactory::class,
                 Error\ErrorWrapperInterface::class => Container\ErrorWrapperFactory::class,
                 Authentication\JwtEncoderInterface::class => Container\JwtEncoderFactory::class,
-                ColumnFilters::class => Container\ColumnFiltersFactory::class,
-                DataManager::class => Container\DataManagerFactory::class,
+                ColumnFiltersInterface::class => Container\ColumnFiltersFactory::class,
+                DataManagerInterface::class => Container\DataManagerFactory::class,
             ],
         ];
     }

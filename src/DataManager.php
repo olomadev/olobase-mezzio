@@ -12,7 +12,7 @@ use Laminas\InputFilter\InputFilterInterface;
  *
  * Entity data manager
  */
-class DataManager
+class DataManager implements DataManagerInterface
 {
     const ENTITY_OBJECT = 'object';
     const ENTITY_ARRAY = 'array';
@@ -24,6 +24,13 @@ class DataManager
         $this->inputFilter = $inputFilter;
     }
 
+    /**
+     * Returns to entity array
+     * 
+     * @param  string $schema      scheme class name
+     * @param  array  $entityParts entity classes
+     * @return array
+     */
     public function getEntityData(string $schema, $entityParts = array()) : array
     {
         $data = $this->inputFilter->getData();

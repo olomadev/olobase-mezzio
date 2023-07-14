@@ -13,7 +13,7 @@ use Laminas\Db\Adapter\AdapterInterface;
  *
  * Column filters
  */
-class ColumnFilters
+class ColumnFilters implements ColumnFiltersInterface
 {
     const DATE_QUERY_TYPE_BETWEEN = 'between';
     const DATE_QUERY_TYPE_EQUALITY = 'equality';
@@ -283,6 +283,7 @@ class ColumnFilters
                 }
             }
         }
+        return $this;
     }
 
     /**
@@ -341,6 +342,7 @@ class ColumnFilters
                 $nest->unnest();    
             }
         }
+        return $this;
     }
 
     protected function checkSelect()
@@ -420,7 +422,7 @@ class ColumnFilters
      *
      * @return boolean
      */
-    public function searchDataIsNotEmpty()
+    public function searchDataIsNotEmpty() : bool
     {
         if (! empty($this->searchData)) {
             return true;
@@ -433,7 +435,7 @@ class ColumnFilters
      *
      * @return boolean
      */
-    public function searchDataEmpty()
+    public function searchDataEmpty() : bool
     {
         if (empty($this->searchData)) {
             return true;
@@ -446,7 +448,7 @@ class ColumnFilters
      *
      * @return boolean
      */
-    public function likeDataIsEmpty()
+    public function likeDataIsEmpty() : bool
     {
         if (empty($this->likeData)) {
             return true;
@@ -459,7 +461,7 @@ class ColumnFilters
      *
      * @return boolean
      */
-    public function likeDataIsNotEmpty()
+    public function likeDataIsNotEmpty() : bool
     {
         if (! empty($this->likeData)) {
             return true;
@@ -472,7 +474,7 @@ class ColumnFilters
      *
      * @return boolean
      */
-    public function whereDataIsEmpty()
+    public function whereDataIsEmpty() : bool
     {
         if (empty($this->whereData)) {
             return true;
@@ -484,7 +486,7 @@ class ColumnFilters
      *
      * @return boolean
      */
-    public function whereDataIsNotEmpty()
+    public function whereDataIsNotEmpty() : bool
     {
         if (! empty($this->whereData)) {
             return true;
@@ -497,7 +499,7 @@ class ColumnFilters
      *
      * @return boolean
      */
-    public function orderDataIsNotEmpty()
+    public function orderDataIsNotEmpty() : bool
     {
         if (! empty($this->orderData)) {
             return true;
@@ -510,7 +512,7 @@ class ColumnFilters
      * 
      * @param  string $key 
      */
-    protected static function removeAlias($key)
+    protected static function removeAlias($key) : string
     {
         $key = str_replace(["'","`"], "", $key);
         if (strpos($key, ".") > 0) {
