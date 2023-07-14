@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Error;
+namespace Oloma\Php;
 
 use Laminas\InputFilter\InputFilterInterface;
 
