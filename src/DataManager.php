@@ -60,7 +60,7 @@ class DataManager implements DataManagerInterface
                             $entityData[$key][$name] = $this->inputFilter->getValue($entityPropName);
                         }
                     }
-                    // 
+                    // prop comments
                     $schemaPropertyComment = $prop->getDocComment();
 
                     // ObjectId support
@@ -70,6 +70,11 @@ class DataManager implements DataManagerInterface
                     if (! empty($entityData[$key][$name]['id']) && strpos($schemaPropertyComment, "ObjectId") > 0) {
                         $objectIdValue = $entityData[$key][$name]['id'];
                         $entityData[$key][$name] = $objectIdValue;
+                    }
+                    // e.g. ['userRoles'] = [[id => "", "name" => ""]] associative array [id => name] support
+                    // 
+                    if (strpos($schemaPropertyComment, "@OA\Items(") && strpos($schemaPropertyComment, 'property="id"')) {
+                        $entityData[$name] = $this->inputFilter->getValue($name);
                     }
                     // object support
                     //
