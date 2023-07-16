@@ -71,9 +71,9 @@ class DataManager implements DataManagerInterface
                         $objectIdValue = $entityData[$key][$name]['id'];
                         $entityData[$key][$name] = $objectIdValue;
                     }
-                    // e.g. ['userRoles'] = [[id => "", "name" => ""]] associative array [id => name] support
+                    // associative array support e.g. ['userRoles'] = [[id => "", "name" => ""]] 
                     // 
-                    if (strpos($schemaPropertyComment, "@OA\Items(") && strpos($schemaPropertyComment, 'property="id"')) {
+                    if (strpos($schemaPropertyComment, 'type="array"')) {
                         $entityData[$name] = $this->inputFilter->getValue($name);
                     }
                     // object support
@@ -82,7 +82,7 @@ class DataManager implements DataManagerInterface
                         $objectData = $this->inputFilter->getValue($key);
                         $entityData[$key][$entityPropName] = $objectData[$entityPropName];
                     }
-                    // array support
+                    // entity array support
                     //
                     if (array_key_exists($key, $data) && $entityType == Self::ENTITY_ARRAY) {
                         $arrayKeys[$key][$entityPropName] = $entityPropName;
