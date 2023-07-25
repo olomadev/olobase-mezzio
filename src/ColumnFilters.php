@@ -291,8 +291,9 @@ class ColumnFilters implements ColumnFiltersInterface
      * 
      * @param string $dateColumn column name
      * @param string $endDate if exists
+     * @param string $fixedDate if fixed date exists do the query with it
      */
-    public function setDateFilter($dateColumn, $endDate = null)
+    public function setDateFilter($dateColumn, $endDate = null, $fixedDate = null)
     {
         $this->checkSelect();
         $data = $this->getData();
@@ -325,24 +326,30 @@ class ColumnFilters implements ColumnFiltersInterface
         } else {  // equality date filter
             $columnStart = $dateColumn;
             $columnEnd = $endDate;
-            $startKey = Self::removeAlias($columnStart);
-            $endKey = Self::removeAlias($columnEnd);
-            if (! empty($data[$startKey]) && empty($data[$endKey])) {
+            if ($fixedDate && ! empty($data[$fixedDate])) {
                 $nest = $this->select->where->nest();
-                    $nest->and->equalTo($columnStart, $data[$startKey]);
-                $nest->unnest();
-            } else if (! empty($data[$endKey]) && empty($data[$startKey])) {
-                $nest = $this->select->where->nest();
-                    $nest->and->equalTo($columnEnd, $data[$endKey]);
-                $nest->unnest();
-            } else if (! empty($data[$startKey]) && ! empty($data[$endKey])) {
-                $nest = $this->select->where->nest();
-                    $nest->and->lessThanOrEqualTo($columnStart, $data[$endKey])
-                         ->and->greaterThanOrEqualTo($columnEnd, $data[$startKey]);
+                    $nest->and->lessThanOrEqualTo($columnStart, $data[$fixedDate])
+                         ->and->greaterThanOrEqualTo($columnEnd, $data[$fixedDate]);
                 $nest->unnest();    
+            } else {
+                $startKey = Self::removeAlias($columnStart);
+                $endKey = Self::removeAlias($columnEnd);
+                if (! empty($data[$startKey]) && empty($data[$endKey])) {
+                    $nest = $this->select->where->nest();
+                        $nest->and->equalTo($columnStart, $data[$startKey]);
+                    $nest->unnest();
+                } else if (! empty($data[$endKey]) && empty($data[$startKey])) {
+                    $nest = $this->select->where->nest();
+                        $nest->and->equalTo($columnEnd, $data[$endKey]);
+                    $nest->unnest();
+                } else if (! empty($data[$startKey]) && ! empty($data[$endKey])) {
+                    $nest = $this->select->where->nest();
+                        $nest->and->lessThanOrEqualTo($columnStart, $data[$endKey])
+                             ->and->greaterThanOrEqualTo($columnEnd, $data[$startKey]);
+                    $nest->unnest();    
+                }
             }
         }
-        return $this;
     }
 
     protected function checkSelect()
