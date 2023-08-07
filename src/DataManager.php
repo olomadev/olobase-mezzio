@@ -103,6 +103,11 @@ class DataManager implements DataManagerInterface
                 }
             }
         }
+        // add primary id value
+        //
+        if ($this->inputFilter->has('id')) {
+            $entityData['id'] = $this->inputFilter->getValue('id');    
+        }
         return $entityData;
     }
 }
