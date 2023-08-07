@@ -15,9 +15,6 @@ use Laminas\Db\Adapter\AdapterInterface;
  */
 class ColumnFilters implements ColumnFiltersInterface
 {
-    const DATE_QUERY_TYPE_BETWEEN = 'between';
-    const DATE_QUERY_TYPE_EQUALITY = 'equality';
-
     protected $adapter;
     protected $select;
     protected $data = array();
@@ -307,7 +304,7 @@ class ColumnFilters implements ColumnFiltersInterface
         $columnStart = $dateColumn.'Start';
         $columnEnd = $dateColumn.'End';
 
-        // Between date filter
+        // "between" date filter
         // 
         if (empty($endDate)) {
             if (! empty($data[$columnStart]) && empty($data[$columnEnd])) {
@@ -323,7 +320,7 @@ class ColumnFilters implements ColumnFiltersInterface
                     $nest->and->between($dateColumn, $data[$columnStart], $data[$columnEnd]);
                 $nest->unnest();    
             }
-        } else {  // equality date filter
+        } else {  // equality & fixed date filter
             $columnStart = $dateColumn;
             $columnEnd = $endDate;
             if ($fixedDate && ! empty($data[$fixedDate])) {

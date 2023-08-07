@@ -102,7 +102,6 @@ final class License
         );
         $context = stream_context_create($opts);
         $response = file_get_contents(Self::SERVER."/?key=".$key.'&lang='.$lang, false, $context);
-
         if (is_string($response)) {
             $data = json_decode($response, true);
             if (! empty($data['success'])) {
