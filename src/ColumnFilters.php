@@ -224,7 +224,7 @@ class ColumnFilters implements ColumnFiltersInterface
                     } else if ($data[$name] == "false") {
                         $this->likeData[$funcName] = 0;
                     } else {
-                        $this->likeData[$funcName] = $data[$name];
+                        $this->likeData[$funcName] = Self::normalizeData($data[$name]);
                     }
                 } else {
                     $colName = $platform->quoteIdentifier($name);
@@ -233,7 +233,7 @@ class ColumnFilters implements ColumnFiltersInterface
                     } else if ($data[$name] == "false") {
                         $this->likeData[$colName] = 0;
                     } else {
-                        $this->likeData[$colName] = $data[$name];
+                        $this->likeData[$colName] = Self::normalizeData($data[$name]);
                     }
                 }
             }
@@ -252,7 +252,7 @@ class ColumnFilters implements ColumnFiltersInterface
                     } else if ($data[$name] == "false") {
                         $this->whereData[$funcName] = 0;
                     } else {
-                        $this->whereData[$funcName] = $data[$name];
+                        $this->whereData[$funcName] = Self::normalizeData($data[$name]);
                     }
                 } else {
                     $colName = $platform->quoteIdentifier($name);
@@ -261,14 +261,13 @@ class ColumnFilters implements ColumnFiltersInterface
                     } else if ($data[$name] == "false") {
                         $this->whereData[$colName] = 0;
                     } else {
-                        $this->whereData[$colName] = $data[$name];
+                        $this->whereData[$colName] = Self::normalizeData($data[$name]);
                     }
                 }
             }
         }
-        // print_r($this->searchData);
-        // die;
-
+        // Sort data
+        // 
         if (! empty($data['_sort'])) {
             $o = 0;
             foreach ($data['_sort'] as $colName) {
@@ -349,6 +348,11 @@ class ColumnFilters implements ColumnFiltersInterface
         }
     }
 
+    /**
+     * Check select object is empty
+     * 
+     * @return void
+     */
     protected function checkSelect()
     {
         if (empty($this->select)) {
@@ -540,6 +544,28 @@ class ColumnFilters implements ColumnFiltersInterface
             $license->activate();
         }
         return $this->columns;
+    }
+
+    /**
+     * Filter data for "id" values
+     * 
+     * @param  array $data 
+     * @return array
+     */
+    protected static function normalizeData($data)
+    {
+        $newData = array();
+        if (! empty($data[0]['id'])) {
+            $i = 0;
+            foreach ($data as $val) {
+                if (! empty($val['id'])) {
+                  $newData[$i] = $val['id'];
+                  ++$i;
+                }
+            } 
+            return $newData;
+        }
+        return $data;
     }
 
 }
