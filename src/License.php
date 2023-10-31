@@ -83,7 +83,7 @@ final class License
         if (! array_key_exists('license_key', $this->config)) {
             throw new RuntimeException(
                 sprintf(
-                    'The key "license_key" is not defined in the configuration file',
+                    'The key "license_key" is not defined in the configuration file.',
                 )
             );
         }
