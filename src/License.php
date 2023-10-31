@@ -83,8 +83,7 @@ final class License
         if (empty($this->config['licenseKey'])) {
             throw new RuntimeException(
                 sprintf(
-                    "License key is not defined in your %s file. Please define the license key sent to you",
-                    "/config/autoload/mezzio.global.php"
+                    "License key is not defined in your configuration file. Please identify the license key you received from the customer panel",
                 )
             );
         }
