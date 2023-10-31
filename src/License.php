@@ -80,16 +80,23 @@ final class License
      */
     public function activate()
     {   
-        if (empty($this->config['licenseKey'])) {
+        if (! array_key_exists('license_key', $this->config['license_key'])) {
             throw new RuntimeException(
                 sprintf(
-                    "License key is not defined in your configuration file. Please identify the license key you received from the customer panel",
+                    'The key "license_key" is not defined in the configuration file',
+                )
+            );
+        }
+        if (empty($this->config['license_key'])) {
+            throw new RuntimeException(
+                sprintf(
+                    "License key is not defined in your configuration file. Please identify the license key you received from the customer panel.",
                 )
             );
         }
         $lang = "en";
         $data = array();
-        $key = trim($this->config['licenseKey']);
+        $key = trim($this->config['license_key']);
         $headers = "Accept-language: $lang\r\n";
 
         // Create a stream
