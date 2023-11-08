@@ -63,6 +63,17 @@ class DataManager implements DataManagerInterface
                     // prop comments
                     $schemaPropertyComment = $prop->getDocComment();
 
+                    // String support
+                    // 
+                    if (strpos($schemaPropertyComment, '@var string') && $this->inputFilter->has($name)) {
+                        $entityData[$key][$name] = $this->inputFilter->getValue($name);
+                    }
+                    // Integer support
+                    // 
+                    if (strpos($schemaPropertyComment, '@var integer') && $this->inputFilter->has($name)) {
+                        $entityData[$key][$name] = $this->inputFilter->getValue($name);
+                    }
+                    //
                     // ObjectId support
                     // ["id": "ebf6b935-5bd8-46c1-877b-9c758073f278", "name", "blabala"]
                     // it converts object to string "id"
@@ -71,18 +82,18 @@ class DataManager implements DataManagerInterface
                         $objectIdValue = $entityData[$key][$name]['id'];
                         $entityData[$key][$name] = $objectIdValue;
                     }
-                    // associative array support e.g. ['userRoles'] = [[id => "", "name" => ""]] 
+                    // Array support e.g. ['userRoles'] = [[id => "", "name" => ""]] 
                     // 
                     if (strpos($schemaPropertyComment, 'type="array"')) {
                         $entityData[$name] = $this->inputFilter->getValue($name);
                     }
-                    // object support
+                    // Entity object support
                     //
                     if ($entityType == Self::ENTITY_OBJECT && isset($data[$key][$entityPropName])) {
                         $objectData = $this->inputFilter->getValue($key);
                         $entityData[$key][$entityPropName] = $objectData[$entityPropName];
                     }
-                    // entity array support
+                    // Entity array support
                     //
                     if (array_key_exists($key, $data) && $entityType == Self::ENTITY_ARRAY) {
                         $arrayKeys[$key][$entityPropName] = $entityPropName;
