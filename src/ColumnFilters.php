@@ -507,6 +507,19 @@ class ColumnFilters implements ColumnFiltersInterface
     }
 
     /**
+     * Returns to true if empty otherwise false
+     *
+     * @return boolean
+     */
+    public function orderDataIsEmpty() : bool
+    {
+        if (empty($this->orderData)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns to true if not empty otherwise false
      *
      * @return boolean

@@ -97,15 +97,9 @@ interface ColumnFiltersInterface
      * 
      * @param string $dateColumn column name
      * @param string $endDate if exists
+     * @param string $fixedDate if fixed date exists do the query with it
      */
-    public function setDateFilter($dateColumn, $endDate = null);
-
-    /**
-     * Returns to filtered column => value
-     *
-     * @return array
-     */
-    public function getColumnData() : array;
+    public function setDateFilter($dateColumn, $endDate = null, $fixedDate = null);
 
     /**
      * Returns to "like" data column => value
@@ -183,6 +177,13 @@ interface ColumnFiltersInterface
      * @return boolean
      */
     public function whereDataIsNotEmpty(): bool;
+
+    /**
+     * Returns to true if empty otherwise false
+     *
+     * @return boolean
+     */
+    public function orderDataIsEmpty() : bool;
 
     /**
      * Returns to true if not empty otherwise false
