@@ -40,6 +40,7 @@ class DataManager implements DataManagerInterface
         $entityData = array();
         $entityArray = array();
         $arrayKeys = array();
+        $noneEntityKeys = array();
         foreach ($entityProperties as $prop) {
             foreach ($entityParts as $key => $entityClass) {
                 $name = $prop->getName();
@@ -62,17 +63,6 @@ class DataManager implements DataManagerInterface
                     }
                     // prop comments
                     $schemaPropertyComment = $prop->getDocComment();
-
-                    // String support
-                    // 
-                    if (strpos($schemaPropertyComment, '@var string') && $this->inputFilter->has($name)) {
-                        $entityData[$key][$name] = $this->inputFilter->getValue($name);
-                    }
-                    // Integer support
-                    // 
-                    if (strpos($schemaPropertyComment, '@var integer') && $this->inputFilter->has($name)) {
-                        $entityData[$key][$name] = $this->inputFilter->getValue($name);
-                    }
                     //
                     // ObjectId support
                     // ["id": "ebf6b935-5bd8-46c1-877b-9c758073f278", "name", "blabala"]
@@ -101,7 +91,21 @@ class DataManager implements DataManagerInterface
                 }
             }
         }
-
+        //
+        // set no entity column names (find the column names which are defined in the Swagger schema)
+        // 
+        foreach(array_keys($entityParts) as $tableName) {
+            if (array_key_exists($tableName, $entityData)) { // check whether it's defined in entity data
+                foreach ($entityProperties as $prop) { // get only swagger schema variables
+                    $propName = $prop->getName();
+                    if ($this->inputFilter->has($propName) // check the schema has this input key in input filter class
+                        && false == array_key_exists($propName, $entityData[$tableName])) {
+                        $entityData[$propName] = $this->inputFilter->getValue($propName); // set input value
+                    }
+                }
+            }
+        }
+        //
         // fill array data with input value
         // 
         foreach ($arrayKeys as $aKey => $aPropArray) {
