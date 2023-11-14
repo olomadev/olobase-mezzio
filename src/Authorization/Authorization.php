@@ -56,7 +56,6 @@ class Authorization implements AuthorizationInterface
         // Check user has permission to the route
         //
         $routeName = $routeResult->getMatchedRouteName();
-
         if (in_array($routeName, $permissions)) {
             return true;
         }

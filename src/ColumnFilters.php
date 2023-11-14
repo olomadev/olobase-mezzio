@@ -279,10 +279,6 @@ class ColumnFilters implements ColumnFiltersInterface
                 }
             }
         }
-        $license = new \Oloma\Php\License($this->config);
-        if (! $license->check()) {
-            $license->activate();
-        }
         return $this;
     }
 
