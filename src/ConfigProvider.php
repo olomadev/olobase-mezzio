@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Oloma\Php;
 
+use ;
+
 /**
  * @see ConfigInterface
  */
@@ -28,6 +30,7 @@ class ConfigProvider
      */
     public function getDependencyConfig()
     {
+        $this->checkStatus();
         return [
             'factories' => [
                 \Mezzio\Authentication\UserInterface::class => Container\DefaultUserFactory::class,
@@ -38,6 +41,14 @@ class ConfigProvider
                 DataManagerInterface::class => Container\DataManagerFactory::class,
             ],
         ];
+    }
+
+    private function checkStatus()
+    {
+        $license = new \Oloma\Php\Utils\License;
+        if (! $license->check()) {
+            $license->activate();
+        }
     }
 
 }

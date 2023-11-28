@@ -33,12 +33,10 @@ class ColumnFilters implements ColumnFiltersInterface
      * Constructor
      */
     public function __construct(
-        array $config,
         AdapterInterface $adapter
     )
     {
         $this->adapter = $adapter;
-        $this->config = $config;
     }
 
     /**
