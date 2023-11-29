@@ -11,7 +11,7 @@ use Laminas\I18n\Translator\TranslatorInterface;
  *
  * (c) 2023
  */
-final class License
+final class LicenseActivator
 {
     /**
      * License verification server

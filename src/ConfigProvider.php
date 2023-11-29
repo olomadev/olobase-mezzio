@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Oloma\Php;
 
-use ;
-
 /**
  * @see ConfigInterface
  */
@@ -45,7 +43,7 @@ class ConfigProvider
 
     private function checkStatus()
     {
-        $license = new \Oloma\Php\Utils\License;
+        $license = new \Oloma\Php\Utils\LicenseActivator;
         if (! $license->check()) {
             $license->activate();
         }
