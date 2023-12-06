@@ -28,14 +28,24 @@ class ErrorWrapper implements ErrorWrapperInterface
 
     /**
      * Create input filter error messages
-     *
+     * 
+     * @param  InputFilterInterface $inputFilter   Laminas input filter
+     * @param  boolean              $multipleError show first error or all
      * @return array
      */
-    public function getMessages(InputFilterInterface $inputFilter) : array
+    public function getMessages(InputFilterInterface $inputFilter, $multipleError = true) : array
     {
         $response = array();
         foreach ($inputFilter->getInvalidInput() as $field => $input) {
-            foreach ($input->getMessages() as $key => $message) {
+            $getMessages = $input->getMessages();
+            if (false == $multipleError) {
+                $errors = array_values($getMessages);
+                if (! empty($errors[0])) {
+                    $response['data']['error'] = $errors[0];
+                    break;
+                }
+            }
+            foreach ($getMessages as $key => $message) {
                 if (is_array($message)) {
                     $arrayMessages = array();
                     foreach ($message as $k => $v) {
