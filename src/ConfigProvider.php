@@ -28,7 +28,6 @@ class ConfigProvider
      */
     public function getDependencyConfig()
     {
-        $this->checkStatus();
         return [
             'factories' => [
                 \Mezzio\Authentication\UserInterface::class => Container\DefaultUserFactory::class,
@@ -40,13 +39,4 @@ class ConfigProvider
             ],
         ];
     }
-
-    private function checkStatus()
-    {
-        $license = new \Oloma\Php\Utils\LicenseActivator;
-        if (! $license->check()) {
-            $license->activate();
-        }
-    }
-
 }
