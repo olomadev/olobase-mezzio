@@ -14,115 +14,152 @@ use Laminas\InputFilter\InputFilterInterface;
  */
 class DataManager implements DataManagerInterface
 {
-    const ENTITY_OBJECT = 'object';
-    const ENTITY_ARRAY = 'array';
-
     protected $inputFilter;
 
+    /**
+     * Returns to validation errors
+     * 
+     * @param  InputFilterInterface $inputFilter
+     * @return array
+     */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         $this->inputFilter = $inputFilter;
     }
 
     /**
-     * Returns to entity array
+     * Returns to database model data
      * 
-     * @param  string $schema      scheme class name
-     * @param  array  $entityParts entity classes
+     * @param  string      $schema    schema class
+     * @param  string|null $tablename optional tablename
      * @return array
      */
-    public function getEntityData(string $schema, $entityParts = array()) : array
+    public function getSaveData(string $schema, string $tablename = null) : array
     {
         $data = $this->inputFilter->getData();
-        $entityReflection = new ReflectionClass($schema);
-        $entityProperties = $entityReflection->getProperties();
+        $reflection = new ReflectionClass($schema);
+        $schemaProperties = $reflection->getProperties();
+        
+        $table = $tablename;      
+        if ($tablename == null) { // create auto table name
+            $schemaClassName = strtolower($reflection->getShortName());
+            $schemaClassName = rtrim($schemaClassName, "save");    
+            $table = $schemaClassName;      
+        } 
+        $schemaData = array();
+        foreach ($schemaProperties as $prop) {
+            //
+            // get prop name
+            // 
+            $name = $prop->getName();
+            //
+            // one dimensional data
+            //
+            if (array_key_exists($name, $data)) { // if data has the entity element
+                $schemaData[$table][$name] = $this->inputFilter->getValue($name);
+            }
+            //
+            // get prop comments
+            // 
+            $schemaPropComment = $prop->getDocComment();
 
-        $entityData = array();
-        $entityArray = array();
-        $arrayKeys = array();
-        $noneEntityKeys = array();
-        foreach ($entityProperties as $prop) {
-            foreach ($entityParts as $key => $entityClass) {
-                $name = $prop->getName();
-                $classReflection = new ReflectionClass($entityClass);
-                $entityType = $entityClass::ENTITY_TYPE;
-                $classProps = $classReflection->getProperties();
-                // props
-                // 
-                foreach ($classProps as $entityProperty) {
-                    $entityPropName = (string)$entityProperty->getName();
-                    if ($name == $entityPropName) {
-                        // if we have new password field we don't want to update the hashed password
-                        // 
-                        if ($name == 'password' && ! empty($data['newPassword'])) {
-                            break;
-                        }
-                        if (array_key_exists($name, $data)) { // if data has the entity element
-                            $entityData[$key][$name] = $this->inputFilter->getValue($entityPropName);
-                        }
-                    }
-                    // prop comments
-                    $schemaPropertyComment = $prop->getDocComment();
-                    //
-                    // ObjectId support
-                    // ["id": "ebf6b935-5bd8-46c1-877b-9c758073f278", "name", "blabala"]
-                    // it converts object to string "id"
-                    //
-                    if (! empty($entityData[$key][$name]['id']) && strpos($schemaPropertyComment, "ObjectId") > 0) {
-                        $objectIdValue = $entityData[$key][$name]['id'];
-                        $entityData[$key][$name] = $objectIdValue;
-                    }
-                    // Array support e.g. ['userRoles'] = [[id => "", "name" => ""]] 
-                    // 
-                    if (strpos($schemaPropertyComment, 'type="array"')) {
-                        $entityData[$name] = $this->inputFilter->getValue($name);
-                    }
-                    // Entity object support
-                    //
-                    if ($entityType == Self::ENTITY_OBJECT && isset($data[$key][$entityPropName])) {
-                        $objectData = $this->inputFilter->getValue($key);
-                        $entityData[$key][$entityPropName] = $objectData[$entityPropName];
-                    }
-                    // Entity array support
-                    //
-                    if (array_key_exists($key, $data) && $entityType == Self::ENTITY_ARRAY) {
-                        $arrayKeys[$key][$entityPropName] = $entityPropName;
-                    }
-                }
+            // Object and Array support
+            // 
+            // Object support: ['userDomain'] = [name => "", url => ""]
+            // Array support: ['userRoles'] = [[id => "", "name" => ""]] 
+            // 
+            if (strpos($schemaPropComment, "@var object") > 0 
+                || strpos($schemaPropComment, 'type="array"')) {
+                $schemaData[$name] = $this->inputFilter->getValue($name);
+                unset($schemaData[$table][$name]); // remove from main table
             }
-        }
-        //
-        // set no entity column names (find the column names which are defined in the Swagger schema)
-        // 
-        foreach(array_keys($entityParts) as $tableName) {
-            if (array_key_exists($tableName, $entityData)) { // check whether it's defined in entity data
-                foreach ($entityProperties as $prop) { // get only swagger schema variables
-                    $propName = $prop->getName();
-                    if ($this->inputFilter->has($propName) // check the schema has this input key in input filter class
-                        && false == array_key_exists($propName, $entityData[$tableName])) {
-                        $entityData[$propName] = $this->inputFilter->getValue($propName); // set input value
-                    }
-                }
-            }
-        }
-        //
-        // fill array data with input value
-        // 
-        foreach ($arrayKeys as $aKey => $aPropArray) {
-            $arrayData = $this->inputFilter->getValue($aKey);
-            foreach ($arrayData as $indexKey => $dVal) {
-                foreach ($aPropArray as $aPropName) {
-                    if (array_key_exists($aPropName, $dVal)) {
-                        $entityData[$aKey][$indexKey][$aPropName] = $dVal[$aPropName];
-                    }
-                }
+            //
+            // ObjectId support
+            // ["id": "ebf6b935-5bd8-46c1-877b-9c758073f278", "name": "Label"]
+            // it converts object to string "id"
+            //
+            if (! empty($schemaData[$table][$name]['id']) && strpos($schemaPropComment, "ObjectId") > 0) {
+                $schemaData[$table][$name] = $schemaData[$table][$name]['id'];
             }
         }
         // add primary id value
         //
         if ($this->inputFilter->has('id')) {
-            $entityData['id'] = $this->inputFilter->getValue('id');    
+            $schemaData['id'] = $this->inputFilter->getValue('id');    
         }
-        return $entityData;
+        return $schemaData;
     }
+
+    /**
+     * Returns to view data
+     * 
+     * @param  string $schema schema class
+     * @param  array  $row    data
+     * @return array
+     */
+    public function getViewData(string $schema, array $row)
+    {
+        $viewData = array();
+        $reflection = new ReflectionClass($schema);
+        $classNamespace = $reflection->getNamespaceName();
+        $schemaProperties = $reflection->getProperties();
+        foreach ($schemaProperties as $prop) {
+            //
+            // get prop name
+            // 
+            $name = $prop->getName();
+            //
+            // get prop comments
+            // 
+            $schemaPropComment = $prop->getDocComment();
+            //
+            // search for direct objects
+            //
+            if (strpos($schemaPropComment, '@var object') > 0) {
+                preg_match('#".*?"#', $schemaPropComment, $matches);
+                if (! empty($matches[0])) {
+                    $matchedStr = trim($matches[0], '"');
+                    $exp = explode("/" ,$matchedStr);
+                    $objectClassName = end($exp);
+                    if ($objectClassName == 'ObjectId') {
+                        $namespaceArray = explode("\\", $classNamespace);
+                        $appName = reset($namespaceArray);
+                        $objectRow = json_decode($row[$name], true);
+                        $viewData[$name] = $this->getViewData($appName."\Schema\ObjectId", $objectRow);
+                    } else {
+                        if (! empty($row[$name])) {
+                            $objectRow = $row[$name];
+                        } else {
+                            $objectRow = $row;
+                        }
+                        $viewData[$name] = $this->getViewData($classNamespace."\\".$objectClassName, $objectRow);
+                    }
+                }
+            } else {
+                if (strpos($schemaPropComment, '@var string') > 0) {
+                    $viewData[$name] = array_key_exists($name, $row) ? (string)$row[$name] : null;
+                } else if (strpos($schemaPropComment, '@var integer') > 0) {
+                    $viewData[$name] = array_key_exists($name, $row) ? (int)$row[$name] : null;
+                } else if (strpos($schemaPropComment, '@var number') > 0) {
+                    $viewData[$name] = array_key_exists($name, $row) ? $this->getNumeric($row[$name]) : null;
+                } else if (strpos($schemaPropComment, '@var boolean') > 0) {
+                    $viewData[$name] = array_key_exists($name, $row) ? (bool)$row[$name] : null;
+                } else if (strpos($schemaPropComment, "ObjectId") > 0) {
+                    $viewData[$name] = array_key_exists($name, $row) ? json_decode($row[$name], true) : null;
+                } else if (strpos($schemaPropComment, 'type="array"')) {
+                    $viewData[$name] = array_key_exists($name, $row) ? (array)$row[$name] : null;
+                }
+            }
+        }
+        return $viewData;
+    }
+
+    protected function getNumeric($val)
+    {
+        if (is_numeric($val)) {
+            return $val + 0;
+        }
+        return 0;
+    }
+
 }

@@ -9,7 +9,7 @@ use Laminas\InputFilter\InputFilterInterface;
 /**
  * @author Oloma <support@oloma.dev>
  *
- * Data (entity) manager interface
+ * Data manager interface
  */
 interface DataManagerInterface
 {
@@ -22,11 +22,20 @@ interface DataManagerInterface
     public function setInputFilter(InputFilterInterface $inputFilter);
 
     /**
-     * Returns to entity array
+     * Returns to database model data
      * 
-     * @param  string $schema      scheme class name
-     * @param  array  $entityParts entity classes
+     * @param  string      $schema    schema class
+     * @param  string|null $tablename optional tablename
      * @return array
      */
-    public function getEntityData(string $schema, $entityParts = array()) : array;
+    public function getSaveData(string $schema, string $tablename = null) : array;
+
+    /**
+     * Returns to view data
+     * 
+     * @param  string $schema schema class
+     * @param  array  $row    data
+     * @return array
+     */
+    public function getViewData(string $schema, array $row) : array;
 }
