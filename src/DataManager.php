@@ -39,7 +39,6 @@ class DataManager implements DataManagerInterface
         $data = $this->inputFilter->getData();
         $reflection = new ReflectionClass($schema);
         $schemaProperties = $reflection->getProperties();
-        
         $table = $tablename;      
         if ($tablename == null) { // create auto table name
             $schemaClassName = strtolower($reflection->getShortName());
@@ -97,7 +96,7 @@ class DataManager implements DataManagerInterface
      * @param  array  $row    data
      * @return array
      */
-    public function getViewData(string $schema, array $row)
+    public function getViewData(string $schema, array $row) : array
     {
         $viewData = array();
         $reflection = new ReflectionClass($schema);
@@ -128,11 +127,15 @@ class DataManager implements DataManagerInterface
                         $viewData[$name] = $this->getViewData($appName."\Schema\ObjectId", $objectRow);
                     } else {
                         if (! empty($row[$name])) {
-                            $objectRow = $row[$name];
+                            $objectRow = json_decode($row[$name], true);
                         } else {
                             $objectRow = $row;
                         }
-                        $viewData[$name] = $this->getViewData($classNamespace."\\".$objectClassName, $objectRow);
+                        $viewSchemaClass = $classNamespace."\\".$objectClassName;
+                        if (file_exists(PROJECT_ROOT."/src/$appName/src/Schema/".$objectClassName.".php")) {  // look for common schema
+                            $viewSchemaClass = $appName."\Schema\\".$objectClassName;
+                        }
+                        $viewData[$name] = $this->getViewData($viewSchemaClass, $objectRow);
                     }
                 }
             } else {
@@ -154,6 +157,12 @@ class DataManager implements DataManagerInterface
         return $viewData;
     }
 
+    /**
+     * Numeric helper
+     * 
+     * @param  mixed $val value
+     * @return number
+     */
     protected function getNumeric($val)
     {
         if (is_numeric($val)) {
