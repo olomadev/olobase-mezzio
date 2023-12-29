@@ -102,6 +102,8 @@ class DataManager implements DataManagerInterface
         $reflection = new ReflectionClass($schema);
         $classNamespace = $reflection->getNamespaceName();
         $schemaProperties = $reflection->getProperties();
+        $namespaceArray = explode("\\", $classNamespace);
+        $appName = reset($namespaceArray);
         foreach ($schemaProperties as $prop) {
             //
             // get prop name
@@ -121,8 +123,6 @@ class DataManager implements DataManagerInterface
                     $exp = explode("/" ,$matchedStr);
                     $objectClassName = end($exp);
                     if ($objectClassName == 'ObjectId') {
-                        $namespaceArray = explode("\\", $classNamespace);
-                        $appName = reset($namespaceArray);
                         $objectRow = json_decode($row[$name], true);
                         $viewData[$name] = $this->getViewData($appName."\Schema\ObjectId", $objectRow);
                     } else {

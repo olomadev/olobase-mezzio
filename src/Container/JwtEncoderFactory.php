@@ -13,6 +13,6 @@ class JwtEncoderFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('config');
-        return new JwtEncoder($config['jwt_encoder']['secret_key']);
+        return new JwtEncoder($config['token']);
     }
 }
