@@ -24,7 +24,7 @@ final class JwtEncoder implements JwtEncoderInterface
     {
         if (empty($config['public_key']) || empty($config['private_key'])) {
             throw new JwtEncoderException(
-                "Public or private keys cannot not be empty in token configuration."
+                "Public or private keys cannot not be empty in token configuration"
             );
         }
         $this->publicKey = $config['public_key'];
