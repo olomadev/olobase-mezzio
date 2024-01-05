@@ -209,7 +209,7 @@ class ColumnFilters implements ColumnFiltersInterface
         // Like data
         // 
         foreach ($this->likeColumns as $name) {
-            if (! empty($data[$name])) {
+            if (array_key_exists($name, $data)) {
                 if (isset($this->parentColumns[$name])) { // search support for array columns
                     $name = $this->parentColumns[$name];
                 }
@@ -237,7 +237,7 @@ class ColumnFilters implements ColumnFiltersInterface
         // Where data
         // 
         foreach ($this->whereColumns as $name) {
-            if (! empty($data[$name])) {
+            if (array_key_exists($name, $data)) {
                 if (isset($this->parentColumns[$name])) { // search support for array columns
                     $name = $this->parentColumns[$name];
                 }
