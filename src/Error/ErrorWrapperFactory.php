@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio;
+namespace Oloma\Mezzio\Error;
 
 use Oloma\Mezzio\Error\ErrorWrapper;
 use Psr\Container\ContainerInterface;

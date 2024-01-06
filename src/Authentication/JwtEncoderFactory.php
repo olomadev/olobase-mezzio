@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio;
+namespace Oloma\Mezzio\Authentication;
 
 use Psr\Container\ContainerInterface;
 use Oloma\Mezzio\Authentication\JwtEncoder;
