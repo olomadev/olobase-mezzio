@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Container;
+namespace Oloma\Mezzio;
 
-use Oloma\Php\Error\ErrorWrapper;
+use Oloma\Mezzio\Error\ErrorWrapper;
 use Psr\Container\ContainerInterface;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;

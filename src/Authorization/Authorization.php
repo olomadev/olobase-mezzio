@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Authorization;
+namespace Oloma\Mezzio\Authorization;
 
 use Mezzio\Authorization\AuthorizationInterface;
 use Mezzio\Authorization\Exception;

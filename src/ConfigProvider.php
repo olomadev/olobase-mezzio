@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php;
+namespace Oloma\Mezzio;
 
 /**
  * @see ConfigInterface
@@ -30,12 +30,12 @@ class ConfigProvider
     {
         return [
             'factories' => [
-                \Mezzio\Authentication\UserInterface::class => Container\DefaultUserFactory::class,
-                \Mezzio\Authorization\AuthorizationInterface::class => Container\AuthorizationFactory::class,
-                Error\ErrorWrapperInterface::class => Container\ErrorWrapperFactory::class,
-                Authentication\JwtEncoderInterface::class => Container\JwtEncoderFactory::class,
-                ColumnFiltersInterface::class => Container\ColumnFiltersFactory::class,
-                DataManagerInterface::class => Container\DataManagerFactory::class,
+                \Mezzio\Authentication\UserInterface::class => Authentication\DefaultUserFactory::class,
+                \Mezzio\Authorization\AuthorizationInterface::class => Authorization\AuthorizationFactory::class,
+                Error\ErrorWrapperInterface::class => Error\ErrorWrapperFactory::class,
+                Authentication\JwtEncoderInterface::class => Authentication\JwtEncoderFactory::class,
+                ColumnFiltersInterface::class => ColumnFiltersFactory::class,
+                DataManagerInterface::class => DataManagerFactory::class,
             ],
         ];
     }

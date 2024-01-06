@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Container;
+namespace Oloma\Mezzio;
 
-use Oloma\Php\DataManager;
+use Oloma\Mezzio\DataManager;
 use Psr\Container\ContainerInterface;
 
 class DataManagerFactory

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Container;
+namespace Oloma\Mezzio;
 
-use Oloma\Php\ColumnFilters;
+use Oloma\Mezzio\ColumnFilters;
 use Laminas\Db\Adapter\AdapterInterface;
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;

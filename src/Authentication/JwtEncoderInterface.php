@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Authentication;
+namespace Oloma\Mezzio\Authentication;
 
 /**
  * @author Oloma <support@oloma.dev>

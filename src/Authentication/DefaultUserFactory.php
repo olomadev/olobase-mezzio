@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Container;
+namespace Oloma\Mezzio;
 
-use Oloma\Php\Authentication\DefaultUser;
+use Oloma\Mezzio\Authentication\DefaultUser;
 use Mezzio\Authentication\UserInterface;
 use Psr\Container\ContainerInterface;
 

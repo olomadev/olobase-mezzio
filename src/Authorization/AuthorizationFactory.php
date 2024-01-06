@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Container;
+namespace Oloma\Mezzio\Authorization;
 
-use Oloma\Php\Authorization\Authorization;
-use Oloma\Php\Authorization\PermissionModelInterface;
+use Oloma\Mezzio\Authorization\Authorization;
+use Oloma\Mezzio\Authorization\PermissionModelInterface;
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 

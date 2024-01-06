@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php\Exception;
+namespace Oloma\Mezzio\Exception;
 
 use RuntimeException;
 

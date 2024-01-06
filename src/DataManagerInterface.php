@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Php;
+namespace Oloma\Mezzio;
 
 use Laminas\InputFilter\InputFilterInterface;
 
