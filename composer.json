@@ -13,7 +13,7 @@
     "homepage": "https://oloma.dev",
     "autoload": {
         "psr-4": {
-            "Oloma\\Php\\": "src/"
+            "Oloma\\Mezzio\\": "src/"
         }
     },
     "autoload-dev": {
