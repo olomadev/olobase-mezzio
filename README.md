@@ -1,7 +1,7 @@
 
-# Oloma Mezzio-Php Components
+# Oloma Php - Mezzio Framework language components.
 
-Oloma Mezzio Php language components.
+Oloma Mezzio Framework language components.
 
 ## Installation
 
