@@ -48,36 +48,47 @@ class DataManager implements DataManagerInterface
         $schemaData = array();
         foreach ($schemaProperties as $prop) {
             //
-            // get prop name
+            // Get prop name
             // 
             $name = $prop->getName();
             //
-            // one dimensional data
+            // Check data
             //
             if (array_key_exists($name, $data)) { // if data has the entity element
                 $schemaData[$table][$name] = $this->inputFilter->getValue($name);
             }
             //
-            // get prop comments
+            // Detect types
             // 
             $schemaPropComment = $prop->getDocComment();
-
-            // Object and Array support
+            $hasArray = (strpos($schemaPropComment, 'type="array"') > 0) ? true : false;
+            $hasObject = (strpos($schemaPropComment, "@var object") > 0) ? true : false;
+            $isObjectId = (strpos($schemaPropComment, "ObjectId") > 0) ? true : false;
+            //
+            // Array support
             // 
-            // Object support: ['userDomain'] = [name => "", url => ""]
-            // Array support: ['userRoles'] = [[id => "", "name" => ""]] 
+            // Array example: ['userRoles'] = [[id => "", "name" => ""]] 
             // 
-            if (strpos($schemaPropComment, "@var object") > 0 
-                || strpos($schemaPropComment, 'type="array"')) {
+            if ($hasArray) {
+                $schemaData[$name] = $this->inputFilter->getValue($name);
+                unset($schemaData[$table][$name]); // remove from main table
+            }
+            //
+            // Custom object support
+            // 
+            // Object example: ['userDomain'] = [name => "", url => ""]
+            //
+            if ($hasObject && false == $isObjectId) {
                 $schemaData[$name] = $this->inputFilter->getValue($name);
                 unset($schemaData[$table][$name]); // remove from main table
             }
             //
             // ObjectId support
+            // 
             // ["id": "ebf6b935-5bd8-46c1-877b-9c758073f278", "name": "Label"]
             // it converts object to string "id"
             //
-            if (! empty($schemaData[$table][$name]['id']) && strpos($schemaPropComment, "ObjectId") > 0) {
+            if (! empty($schemaData[$table][$name]['id']) && $isObjectId) {
                 $schemaData[$table][$name] = $schemaData[$table][$name]['id'];
             }
         }
