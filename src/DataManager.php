@@ -6,6 +6,7 @@ namespace Oloma\Mezzio;
 
 use ReflectionClass;
 use Laminas\InputFilter\InputFilterInterface;
+use Oloma\Mezzio\Exception\UncodedObjectIdException;
 
 /**
  * @author Oloma <support@oloma.dev>
@@ -134,8 +135,20 @@ class DataManager implements DataManagerInterface
                     $exp = explode("/" ,$matchedStr);
                     $objectClassName = end($exp);
                     if ($objectClassName == 'ObjectId') {
-                        $objectRow = json_decode($row[$name], true);
-                        $viewData[$name] = $this->getViewData($appName."\Schema\ObjectId", $objectRow);
+                        if (array_key_exists($name, $row)) {
+                            $objectRow = json_decode($row[$name], true);
+                            if (! is_array($objectRow)) {
+                                throw new UncodedObjectIdException(
+                                    sprintf(
+                                        'The object id field "%s" must be encoded with JSON_OBJECT() function in your sql code.',
+                                        $name
+                                    )
+                                );
+                            }
+                            $viewData[$name] = $this->getViewData($appName."\Schema\ObjectId", $objectRow);
+                        } else {
+                            $viewData[$name] = null;
+                        }
                     } else {
                         if (! empty($row[$name])) {
                             $objectRow = json_decode($row[$name], true);
