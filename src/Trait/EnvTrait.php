@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio\Trait;
+namespace Olobase\Mezzio\Trait;
 
 trait EnvTrait
 {

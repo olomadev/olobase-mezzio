@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio;
+namespace Olobase\Mezzio;
 
 use ReflectionClass;
 use Laminas\InputFilter\InputFilterInterface;
-use Oloma\Mezzio\Exception\UncodedObjectIdException;
+use Olobase\Mezzio\Exception\UncodedObjectIdException;
 
 /**
  * @author Oloma <support@oloma.dev>

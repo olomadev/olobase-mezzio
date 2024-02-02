@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio;
+namespace Olobase\Mezzio;
 
 use Exception;
 use Laminas\Db\Sql\SqlInterface;

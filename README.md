@@ -5,7 +5,7 @@ Oloma Mezzio Framework components.
 
 ## Installation
 
-Put <kbd>\Oloma\Mezzio\ConfigProvider::class</kbd> in to your <kbd>/config/autoload/mezzio.global.php</kbd> file.
+Put <kbd>\Olobase\Mezzio\ConfigProvider::class</kbd> in to your <kbd>/config/autoload/mezzio.global.php</kbd> file.
 
 ```
 declare(strict_types=1);
@@ -24,7 +24,7 @@ $cacheConfig = [
 $aggregator = new ConfigAggregator([
 
     // Oloma components
-    \Oloma\Mezzio\ConfigProvider::class,
+    \Olobase\Mezzio\ConfigProvider::class,
 
     // Default App module config
     App\ConfigProvider::class,

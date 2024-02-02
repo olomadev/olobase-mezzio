@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio;
+namespace Olobase\Mezzio;
 
-use Oloma\Mezzio\ColumnFilters;
+use Olobase\Mezzio\ColumnFilters;
 use Laminas\Db\Adapter\AdapterInterface;
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio\Authentication;
+namespace Olobase\Mezzio\Authentication;
 
 use Mezzio\Authentication\UserInterface;
 

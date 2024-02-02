@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio\Error;
+namespace Olobase\Mezzio\Error;
 
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\I18n\Translator\TranslatorInterface as Translator;

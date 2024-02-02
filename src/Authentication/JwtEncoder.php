@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio\Authentication;
+namespace Olobase\Mezzio\Authentication;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Oloma\Mezzio\Exception\JwtEncoderException;
+use Olobase\Mezzio\Exception\JwtEncoderException;
 
 /**
  * @author Oloma <support@oloma.dev>

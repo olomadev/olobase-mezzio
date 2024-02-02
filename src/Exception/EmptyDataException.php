@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio\Exception;
+namespace Olobase\Mezzio\Exception;
 
 use RuntimeException;
 

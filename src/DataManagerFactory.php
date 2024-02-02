@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio;
+namespace Olobase\Mezzio;
 
-use Oloma\Mezzio\DataManager;
+use Olobase\Mezzio\DataManager;
 use Psr\Container\ContainerInterface;
 
 class DataManagerFactory

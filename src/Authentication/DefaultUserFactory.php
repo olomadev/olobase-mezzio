@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio\Authentication;
+namespace Olobase\Mezzio\Authentication;
 
-use Oloma\Mezzio\Authentication\DefaultUser;
+use Olobase\Mezzio\Authentication\DefaultUser;
 use Mezzio\Authentication\UserInterface;
 use Psr\Container\ContainerInterface;
 

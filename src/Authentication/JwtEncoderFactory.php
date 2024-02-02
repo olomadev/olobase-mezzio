@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Oloma\Mezzio\Authentication;
+namespace Olobase\Mezzio\Authentication;
 
 use Psr\Container\ContainerInterface;
-use Oloma\Mezzio\Authentication\JwtEncoder;
+use Olobase\Mezzio\Authentication\JwtEncoder;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class JwtEncoderFactory implements FactoryInterface
