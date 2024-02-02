@@ -1,5 +1,5 @@
 
-# Oloma Php - Mezzio Framework components.
+# Olobase Php REST API - Mezzio Framework components.
 
 Oloma Mezzio Framework components.
 
