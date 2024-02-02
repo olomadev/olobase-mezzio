@@ -1,5 +1,5 @@
 {
-    "name": "oloma/mezzio",
+    "name": "olobase/mezzio",
     "type": "library",
     "description": "Oloma is a tool that allows to you quickiy and easily develop modern web panels using vue.js/vuetify and php.",
     "license": "MIT",
@@ -13,7 +13,7 @@
     "homepage": "https://oloma.dev",
     "autoload": {
         "psr-4": {
-            "Oloma\\Mezzio\\": "src/"
+            "Olobase\\Mezzio\\": "src/"
         }
     },
     "autoload-dev": {
