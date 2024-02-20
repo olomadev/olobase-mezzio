@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Olobase\Mezzio;
 
-use Exception;
 use Laminas\Db\Sql\SqlInterface;
 use Laminas\Db\Adapter\AdapterInterface;
+use Olobase\Mezzio\Exception\MethodMandatoryException;
 
 /**
  * @author Oloma <support@oloma.dev>
@@ -20,7 +20,8 @@ class ColumnFilters implements ColumnFiltersInterface
     protected $data = array();
     protected $alias = array();
     protected $columns = array();
-    protected $parentColumns = array();
+    protected $correlatedColumns = array();
+    protected $groupedColumns = array();
     protected $columnData = array();
     protected $searchData = array();
     protected $likeColumns = array();
@@ -46,7 +47,8 @@ class ColumnFilters implements ColumnFiltersInterface
     {
         $this->data = array();
         $this->columns = array();
-        $this->parentColumns = array();
+        $this->groupedColumns = array();
+        $this->correlatedColumns = array();
         $this->alias = array();
         $this->columnData = array();
         $this->searchData = array();
@@ -142,15 +144,42 @@ class ColumnFilters implements ColumnFiltersInterface
     }
 
     /**
-     * Set parent columns
+     * Set correlated columns
      * 
-     * @param string $parent  parent object
+     * @param string $parent  correlated column name
      * @param array  $columns column names
      */
-    public function setParentColumns(string $parent, array $columns)
+    public function setCorrelatedColumns(string $name, array $columns)
     {
         foreach ($columns as $name) {
-            $this->parentColumns[$name] = $parent;    
+            $this->correlatedColumns[$name] = $name;    
+        }
+        return $this;
+    }
+    
+    /**
+     * Set grouped columns
+     * 
+     * @param string $groupName name
+     * @param array  $columns    column names
+     * @param mixed  $returnFunc null|callable
+     */
+    public function setGroupedColumns(
+        string $groupName,
+        array $columns, 
+        callable $returnFunc = null
+    )
+    {
+        if (is_null($returnFunc)) {
+            $returnFunc = function($val) { 
+                return (boolean)$val; 
+            };
+        }
+        foreach ($columns as $name) {
+            $this->groupedColumns[$name] = [
+                'groupName' => $groupName, 
+                'callable' => $returnFunc
+            ];
         }
         return $this;
     }
@@ -169,8 +198,8 @@ class ColumnFilters implements ColumnFiltersInterface
                 if (empty($name)) {
                     break;
                 }
-                if (isset($this->parentColumns[$name])) { // search support for array columns
-                    $name = $this->parentColumns[$col['name']];
+                if (isset($this->correlatedColumns[$name])) { // search support for array columns
+                    $name = $this->correlatedColumns[$col['name']];
                 }
                 if (empty($value) != '') {  // filter columns
                     $newData[$name] = $value;
@@ -194,6 +223,7 @@ class ColumnFilters implements ColumnFiltersInterface
         }
         $this->data = $data;
         $platform = $this->adapter->getPlatform();
+        //
         // Search data
         // 
         foreach ($this->columns as $name) {
@@ -206,62 +236,44 @@ class ColumnFilters implements ColumnFiltersInterface
                 }
             }
         }
+        unset($name);
+        //
         // Like data
         // 
         foreach ($this->likeColumns as $name) {
             if (array_key_exists($name, $data)) {
-                if (isset($this->parentColumns[$name])) { // search support for array columns
-                    $name = $this->parentColumns[$name];
+                if (isset($this->correlatedColumns[$name])) { // search support for correlated columns
+                    $name = $this->correlatedColumns[$name];
                 }
-                if (isset($this->alias[$name])) { // sql function support
-                    $funcName = $this->alias[$name];
-                    if ($data[$name] == "true") { // boolean support
-                        $this->likeData[$funcName] = 1;
-                    } else if ($data[$name] == "false") {
-                        $this->likeData[$funcName] = 0;
-                    } else {
-                        $this->likeData[$funcName] = Self::normalizeData($data[$name]);
-                    }
-                } else {
-                    $colName = $platform->quoteIdentifier($name);
-                    if ($data[$name] == "true") { // boolean support
-                        $this->likeData[$colName] = 1;
-                    } else if ($data[$name] == "false") {
-                        $this->likeData[$colName] = 0;
-                    } else {
-                        $this->likeData[$colName] = Self::normalizeData($data[$name]);
-                    }
-                }
+                $this->setColumnData($name, $data[$name], 'like');
             }
         }
+        unset($name);
+        //
         // Where data
         // 
         foreach ($this->whereColumns as $name) {
             if (array_key_exists($name, $data)) {
-                if (isset($this->parentColumns[$name])) { // search support for array columns
-                    $name = $this->parentColumns[$name];
+                if (isset($this->correlatedColumns[$name])) { // search support for correlated columns
+                    $name = $this->correlatedColumns[$name];
                 }
-                if (isset($this->alias[$name])) { // sql function support
-                    $funcName = $this->alias[$name];
-                    if ($data[$name] == "true") { // boolean support
-                        $this->whereData[$funcName] = 1;
-                    } else if ($data[$name] == "false") {
-                        $this->whereData[$funcName] = 0;
-                    } else {
-                        $this->whereData[$funcName] = Self::normalizeData($data[$name]);
-                    }
-                } else {
-                    $colName = $platform->quoteIdentifier($name);
-                    if ($data[$name] == "true") { // boolean support
-                        $this->whereData[$colName] = 1;
-                    } else if ($data[$name] == "false") {
-                        $this->whereData[$colName] = 0;
-                    } else {
-                        $this->whereData[$colName] = Self::normalizeData($data[$name]);
-                    }
-                }
+                $this->setColumnData($name, $data[$name], 'where');
             }
         }
+        //
+        // Grouped where data
+        // 
+        unset($name);
+        foreach ($this->groupedColumns as $name => $props) {
+            $groupName = $props['groupName'];
+            if (! empty($data[$groupName]) 
+                && in_array($name, $data[$groupName])
+            ) {
+                $returnClosure = $props['callable'];
+                $this->setColumnData($name, $returnClosure($name), 'where');
+            }
+        }
+        //
         // Sort data
         // 
         if (! empty($data['_sort'])) {
@@ -276,6 +288,47 @@ class ColumnFilters implements ColumnFiltersInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * Set where or like data
+     * 
+     * @param string $name      col key
+     * @param string $value     data value
+     * @param string $direction 'where' or 'like'
+     * @param mixed $value      default value
+     */
+    protected function setColumnData($name, $value = null, $direction = 'where')
+    {
+        $platform = $this->adapter->getPlatform();
+        $colValue = is_null($value) ? $data[$name] : $value;
+        if (isset($this->alias[$name])) { // sql function support
+            $funcName = $this->alias[$name];
+            switch ($value) { // boolean support
+                case 'true':
+                    $this->{$direction."Data"}[$funcName] = 1;
+                    break;
+                case 'false':
+                    $this->{$direction."Data"}[$funcName] = 0;
+                    break;
+                default:
+                    $this->{$direction."Data"}[$funcName] = Self::normalizeData($colValue);
+                    break;
+            }
+        } else {
+            $colName = $platform->quoteIdentifier($name);
+            switch ($value) { // boolean support
+                case 'true':
+                    $this->{$direction."Data"}[$colName] = 1;
+                    break;
+                case 'false':
+                    $this->{$direction."Data"}[$colName] = 0;
+                    break;
+                default:
+                    $this->{$direction."Data"}[$colName] = Self::normalizeData($colValue);
+                    break;
+            }
+        }
     }
 
     /**
@@ -352,9 +405,9 @@ class ColumnFilters implements ColumnFiltersInterface
     protected function checkSelect()
     {
         if (empty($this->select)) {
-            throw new Exception(
+            throw new MethodMandatoryException(
                 sprintf(
-                    'Coumn filters class "$select" object could not be null. Please use: %s',
+                    'Select object cannot be empty. Please use: %s',
                     '$this->columnFilters->setSelect($select)'
                 )
             );
@@ -428,6 +481,7 @@ class ColumnFilters implements ColumnFiltersInterface
      */
     public function searchDataIsNotEmpty() : bool
     {
+        $this->checkSelect();
         if (! empty($this->searchData)) {
             return true;
         }
@@ -441,6 +495,7 @@ class ColumnFilters implements ColumnFiltersInterface
      */
     public function searchDataEmpty() : bool
     {
+        $this->checkSelect();
         if (empty($this->searchData)) {
             return true;
         }
@@ -454,6 +509,7 @@ class ColumnFilters implements ColumnFiltersInterface
      */
     public function likeDataIsEmpty() : bool
     {
+        $this->checkSelect();
         if (empty($this->likeData)) {
             return true;
         }
@@ -467,6 +523,7 @@ class ColumnFilters implements ColumnFiltersInterface
      */
     public function likeDataIsNotEmpty() : bool
     {
+        $this->checkSelect();
         if (! empty($this->likeData)) {
             return true;
         }
@@ -480,6 +537,7 @@ class ColumnFilters implements ColumnFiltersInterface
      */
     public function whereDataIsEmpty() : bool
     {
+        $this->checkSelect();
         if (empty($this->whereData)) {
             return true;
         }
@@ -492,6 +550,7 @@ class ColumnFilters implements ColumnFiltersInterface
      */
     public function whereDataIsNotEmpty() : bool
     {
+        $this->checkSelect();
         if (! empty($this->whereData)) {
             return true;
         }
@@ -505,6 +564,7 @@ class ColumnFilters implements ColumnFiltersInterface
      */
     public function orderDataIsEmpty() : bool
     {
+        $this->checkSelect();
         if (empty($this->orderData)) {
             return true;
         }
@@ -518,6 +578,7 @@ class ColumnFilters implements ColumnFiltersInterface
      */
     public function orderDataIsNotEmpty() : bool
     {
+        $this->checkSelect();
         if (! empty($this->orderData)) {
             return true;
         }
@@ -560,7 +621,7 @@ class ColumnFilters implements ColumnFiltersInterface
     protected static function normalizeData($data)
     {
         $newData = array();
-        if (! empty($data[0]['id'])) {
+        if (is_array($data) && ! empty($data[0]['id'])) {
             $i = 0;
             foreach ($data as $val) {
                 if (! empty($val['id'])) {

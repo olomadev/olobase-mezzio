@@ -12,7 +12,7 @@ use Laminas\Db\Sql\SqlInterface;
  * Column filters interface
  */
 interface ColumnFiltersInterface
-{
+{  
     /**
      * Reset column filter object
      *
@@ -56,6 +56,15 @@ interface ColumnFiltersInterface
     public function setWhereColumns(array $columns);
 
     /**
+     * Set grouped where columns
+     * 
+     * @param string $groupName name
+     * @param array  $columns    column names
+     * @param mixed  $returnFunc null|callable
+     */
+    public function setGroupedColumns(string $groupName, array $columns, callable $returnFunc = null);
+
+    /**
      * Unset columns
      * 
      * @param  array  $columns columns
@@ -71,12 +80,12 @@ interface ColumnFiltersInterface
     public function setAlias(string $name, string $alias);
 
     /**
-     * Set parent columns
+     * Set correlated columns
      * 
      * @param string $parent  parent object
      * @param array  $columns column names
      */
-    public function setParentColumns(string $parent, array $columns);
+    public function setCorrelatedColumns(string $name, array $columns);
 
     /**
      * Returns to normalized data
