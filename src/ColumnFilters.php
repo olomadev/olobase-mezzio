@@ -334,27 +334,30 @@ class ColumnFilters implements ColumnFiltersInterface
     /**
      * Set date filter for date columns
      * 
-     * @param string $dateColumn column name
-     * @param string $endDate if exists
-     * @param string $fixedDate if fixed date exists do the query with it
+     * @param string $dateColumnName column name
+     * @param string $endDateColumnName if exists
+     * @param string $fixedDateColumnName if fixed date exists do the query with it
      */
-    public function setDateFilter($dateColumn, $endDate = null, $fixedDate = null)
+    public function setDateFilter($dateColumnName, $endDateColumnName = null, $fixedDateColumnName = null)
     {
         $this->checkSelect();
         $data = $this->getData();
 
-        if (isset($this->alias[$dateColumn])) {
-            $dateColumn = $this->alias[$dateColumn];
+        $dateColumn = $dateColumnName;
+        $endDate = $endDateColumnName;
+        $fixedDate = $fixedDateColumnName;
+        if (isset($this->alias[$dateColumnName])) {
+            $dateColumn = $this->alias[$dateColumnName];
         }
         if (isset($this->alias[$endDate])) {
             $endDate = $this->alias[$endDate];
         }
-        $columnStart = $dateColumn.'Start';
-        $columnEnd = $dateColumn.'End';
+        $columnStart = $dateColumnName.'Start';
+        $columnEnd = $dateColumnName.'End';
 
         // "between" date filter
         // 
-        if (empty($endDate)) {
+        if (empty($endDateColumnName)) {
             if (! empty($data[$columnStart]) && empty($data[$columnEnd])) {
                 $nest = $this->select->where->nest();
                     $nest->and->equalTo($dateColumn, $data[$columnStart]);
@@ -371,14 +374,15 @@ class ColumnFilters implements ColumnFiltersInterface
         } else {  // equality & fixed date filter
             $columnStart = $dateColumn;
             $columnEnd = $endDate;
-            if ($fixedDate && ! empty($data[$fixedDate])) {
+            $startKey = Self::removeAlias($columnStart);
+            $endKey = Self::removeAlias($columnEnd);
+            $fixedKey = Self::removeAlias($fixedDate);
+            if ($fixedDate && ! empty($data[$fixedKey])) {
                 $nest = $this->select->where->nest();
-                    $nest->and->lessThanOrEqualTo($columnStart, $data[$fixedDate])
-                         ->and->greaterThanOrEqualTo($columnEnd, $data[$fixedDate]);
+                    $nest->and->lessThanOrEqualTo($columnStart, $data[$fixedKey])
+                         ->and->greaterThanOrEqualTo($columnEnd, $data[$fixedKey]);
                 $nest->unnest();    
             } else {
-                $startKey = Self::removeAlias($columnStart);
-                $endKey = Self::removeAlias($columnEnd);
                 if (! empty($data[$startKey]) && empty($data[$endKey])) {
                     $nest = $this->select->where->nest();
                         $nest->and->equalTo($columnStart, $data[$startKey]);
