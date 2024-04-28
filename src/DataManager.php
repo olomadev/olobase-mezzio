@@ -172,9 +172,9 @@ class DataManager implements DataManagerInterface
                 } else if (strpos($schemaPropComment, '@var boolean') > 0) {
                     $viewData[$name] = array_key_exists($name, $row) ? (bool)$row[$name] : null;
                 } else if (strpos($schemaPropComment, "ObjectId") > 0) {
-                    $viewData[$name] = array_key_exists($name, $row) ? json_decode($row[$name], true) : null;
+                    $viewData[$name] = (array_key_exists($name, $row) && is_string($row[$name])) ? json_decode($row[$name], true) : null;
                 } else if (strpos($schemaPropComment, 'type="array"')) {
-                    $viewData[$name] = array_key_exists($name, $row) ? (array)$row[$name] : null;
+                    $viewData[$name] = array_key_exists($name, $row) ? (array)$row[$name] : array();
                 }
             }
         }
