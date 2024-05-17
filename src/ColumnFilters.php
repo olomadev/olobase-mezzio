@@ -594,14 +594,16 @@ class ColumnFilters implements ColumnFiltersInterface
      * 
      * @param  string $key 
      */
-    protected static function removeAlias($key) : string
+    protected static function removeAlias($key)
     {
-        $key = str_replace(["'","`"], "", $key);
-        if (strpos($key, ".") > 0) {
-            $exp = explode(".", $key);
-            if (is_array($exp) && count($exp) > 0) {
-                $key = end($exp);
-            }
+        if (is_string($key)) {
+            $key = str_replace(["'","`"], "", $key);
+            if (strpos($key, ".") > 0) {
+                $exp = explode(".", $key);
+                if (is_array($exp) && count($exp) > 0) {
+                    $key = end($exp);
+                }
+            }    
         }
         return $key;
     }
