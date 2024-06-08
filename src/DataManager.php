@@ -72,6 +72,16 @@ class DataManager implements DataManagerInterface
             // 
             if ($hasArray) {
                 $schemaData[$name] = $this->inputFilter->getValue($name);
+                //
+                // ObjectId support in array schema
+                // 
+                foreach($schemaData[$name] as $key => $val) {
+                    foreach ($val as $k => $v) {
+                        if (! empty($schemaData[$name][$key][$k]['id'])) {
+                            $schemaData[$name][$key][$k] = $schemaData[$name][$key][$k]['id'];
+                        }
+                    }
+                }
                 unset($schemaData[$table][$name]); // remove from main table
             }
             //
