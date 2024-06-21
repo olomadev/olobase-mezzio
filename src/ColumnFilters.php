@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Olobase\Mezzio;
 
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\SqlInterface;
 use Laminas\Db\Adapter\AdapterInterface;
 use Olobase\Mezzio\Exception\MethodMandatoryException;
@@ -20,7 +21,6 @@ class ColumnFilters implements ColumnFiltersInterface
     protected $data = array();
     protected $alias = array();
     protected $columns = array();
-    protected $correlatedColumns = array();
     protected $groupedColumns = array();
     protected $columnData = array();
     protected $searchData = array();
@@ -48,7 +48,6 @@ class ColumnFilters implements ColumnFiltersInterface
         $this->data = array();
         $this->columns = array();
         $this->groupedColumns = array();
-        $this->correlatedColumns = array();
         $this->alias = array();
         $this->columnData = array();
         $this->searchData = array();
@@ -137,22 +136,20 @@ class ColumnFilters implements ColumnFiltersInterface
      * @param string $name  requested column name
      * @param string $alias
      */
-    public function setAlias(string $name, string $alias)
+    public function setAlias(string $name, $alias)
     {
-        $this->alias[$name] = $alias;
-        return $this;
-    }
-
-    /**
-     * Set correlated columns
-     * 
-     * @param string $parent  correlated column name
-     * @param array  $columns column names
-     */
-    public function setCorrelatedColumns(string $name, array $columns)
-    {
-        foreach ($columns as $name) {
-            $this->correlatedColumns[$name] = $name;    
+        if ($alias instanceof Expression) {
+            $values = $alias->getExpressionData();
+            if (! empty($values[0][0])) {
+                $quotedValues = array_map(function($v) {
+                        return is_string($v) ? "'".$v."'" : $v;
+                    },
+                    $values[0][1]
+                );
+                $this->alias[$name] = vsprintf($values[0][0], $quotedValues);
+            }
+        } else {
+            $this->alias[$name] = $alias;
         }
         return $this;
     }
@@ -198,9 +195,6 @@ class ColumnFilters implements ColumnFiltersInterface
                 if (empty($name)) {
                     break;
                 }
-                if (isset($this->correlatedColumns[$name])) { // search support for array columns
-                    $name = $this->correlatedColumns[$col['name']];
-                }
                 if (empty($value) != '') {  // filter columns
                     $newData[$name] = $value;
                 }
@@ -242,9 +236,6 @@ class ColumnFilters implements ColumnFiltersInterface
         // 
         foreach ($this->likeColumns as $name) {
             if (array_key_exists($name, $data)) {
-                if (isset($this->correlatedColumns[$name])) { // search support for correlated columns
-                    $name = $this->correlatedColumns[$name];
-                }
                 $this->setColumnData($name, $data[$name], 'like');
             }
         }
@@ -254,9 +245,6 @@ class ColumnFilters implements ColumnFiltersInterface
         // 
         foreach ($this->whereColumns as $name) {
             if (array_key_exists($name, $data)) {
-                if (isset($this->correlatedColumns[$name])) { // search support for correlated columns
-                    $name = $this->correlatedColumns[$name];
-                }
                 $this->setColumnData($name, $data[$name], 'where');
             }
         }
@@ -302,6 +290,7 @@ class ColumnFilters implements ColumnFiltersInterface
     {
         $platform = $this->adapter->getPlatform();
         $colValue = is_null($value) ? $data[$name] : $value;
+
         if (isset($this->alias[$name])) { // sql function support
             $funcName = $this->alias[$name];
             switch ($value) { // boolean support
