@@ -77,15 +77,7 @@ interface ColumnFiltersInterface
      * @param string $name  requested column name
      * @param string $alias
      */
-    public function setAlias(string $name, string $alias);
-
-    /**
-     * Set correlated columns
-     * 
-     * @param string $parent  parent object
-     * @param array  $columns column names
-     */
-    public function setCorrelatedColumns(string $name, array $columns);
+    public function setAlias(string $name, $alias);
 
     /**
      * Returns to normalized data
