@@ -183,7 +183,7 @@ class DataManager implements DataManagerInterface
                     $viewData[$name] = array_key_exists($name, $row) ? (bool)$row[$name] : null;
                 } else if (strpos($schemaPropComment, "ObjectId") > 0) {
                     $viewData[$name] = (array_key_exists($name, $row) && is_string($row[$name])) ? json_decode($row[$name], true) : null;
-                } else if (strpos($schemaPropComment, 'type="array"')) {
+                } else if (strpos($schemaPropComment, '@var array')) {
                     $viewData[$name] = array_key_exists($name, $row) ? (array)$row[$name] : array();
                 }
             }
