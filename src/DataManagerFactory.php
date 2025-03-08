@@ -11,6 +11,6 @@ class DataManagerFactory
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new DataManager;
+        return new DataManager($container->get('config'));
     }
 }

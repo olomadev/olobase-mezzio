@@ -15,7 +15,18 @@ use Olobase\Mezzio\Exception\UncodedObjectIdException;
  */
 class DataManager implements DataManagerInterface
 {
+    protected $config;
     protected $inputFilter;
+
+    /**
+     * Set configurations
+     * 
+     * @param array $config config
+     */
+    public function __construct(array $config)
+    {
+        $this->config = isset($config['data_manager']) ? $config['data_manager'] : array();
+    }
 
     /**
      * Returns to validation errors
@@ -125,7 +136,9 @@ class DataManager implements DataManagerInterface
         $classNamespace = $reflection->getNamespaceName();
         $schemaProperties = $reflection->getProperties();
         $namespaceArray = explode("\\", $classNamespace);
+        $commonName = $this->config['common_schema_module'] ?? null;
         $appName = reset($namespaceArray);
+
         foreach ($schemaProperties as $prop) {
             //
             // get prop name
@@ -168,6 +181,8 @@ class DataManager implements DataManagerInterface
                         $viewSchemaClass = $classNamespace."\\".$objectClassName;
                         if (file_exists(PROJECT_ROOT."/src/$appName/src/Schema/".$objectClassName.".php")) {  // look for common schema
                             $viewSchemaClass = $appName."\Schema\\".$objectClassName;
+                        } else if (file_exists(PROJECT_ROOT."/src/$commonName/src/Schema/".$objectClassName.".php")) {
+                            $viewSchemaClass = $commonName."\Schema\\".$objectClassName;
                         }
                         $viewData[$name] = $this->getViewData($viewSchemaClass, $objectRow);
                     }
