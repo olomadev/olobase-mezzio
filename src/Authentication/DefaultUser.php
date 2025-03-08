@@ -71,7 +71,7 @@ final class DefaultUser implements UserInterface
         return $this->identity;
     }
 
-    public function getRoles() : array
+    public function getRoles() : iterable
     {
         return $this->roles;
     }
