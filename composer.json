@@ -26,7 +26,7 @@
     },
     "extra": {
         "laminas": {
-            "component": true
+            "config-provider": "Olobase\\Mezzio\\ConfigProvider"
         }
     }
 }
