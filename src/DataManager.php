@@ -168,7 +168,7 @@ class DataManager implements DataManagerInterface
                                     )
                                 );
                             }
-                            $viewData[$name] = $this->getViewData($appName."\Schema\ObjectId", $objectRow);
+                            $viewData[$name] = $this->getViewData("Common\Schema\ObjectId", $objectRow);
                         } else {
                             $viewData[$name] = null;
                         }
@@ -179,9 +179,9 @@ class DataManager implements DataManagerInterface
                             $objectRow = $row;
                         }
                         $viewSchemaClass = $classNamespace."\\".$objectClassName;
-                        if (file_exists(PROJECT_ROOT."/src/$appName/src/Schema/".$objectClassName.".php")) {  // look for common schema
+                        if (file_exists(PROJECT_ROOT."/src/$appName/src/Schema/".$objectClassName.".php")) {  // look for module schema
                             $viewSchemaClass = $appName."\Schema\\".$objectClassName;
-                        } else if (file_exists(PROJECT_ROOT."/src/$commonName/src/Schema/".$objectClassName.".php")) {
+                        } else if (file_exists(PROJECT_ROOT."/src/$commonName/src/Schema/".$objectClassName.".php")) { // look for common schema
                             $viewSchemaClass = $commonName."\Schema\\".$objectClassName;
                         }
                         $viewData[$name] = $this->getViewData($viewSchemaClass, $objectRow);
