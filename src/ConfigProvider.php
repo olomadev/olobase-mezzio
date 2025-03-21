@@ -30,7 +30,6 @@ class ConfigProvider
     {
         return [
             'factories' => [
-                \Mezzio\Authentication\UserInterface::class => Authentication\DefaultUserFactory::class,
                 \Mezzio\Authorization\AuthorizationInterface::class => Authorization\AuthorizationFactory::class,
                 Error\ErrorWrapperInterface::class => Error\ErrorWrapperFactory::class,
                 Authentication\JwtEncoderInterface::class => Authentication\JwtEncoderFactory::class,
