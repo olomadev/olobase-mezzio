@@ -140,20 +140,22 @@ class ColumnFilters implements ColumnFiltersInterface
     {
         if ($alias instanceof Expression) {
             $values = $alias->getExpressionData();
-            if (! empty($values[0][0])) {
+            if (is_array($values[0]) && empty($values[0][1])) {
                 $quotedValues = array_map(function($v) {
                         return is_string($v) ? "'".$v."'" : $v;
                     },
                     $values[0][1]
                 );
                 $this->alias[$name] = vsprintf($values[0][0], $quotedValues);
+            } else if (! empty($values[0]) && is_string($values[0])) {
+                $this->alias[$name] = $values[0]; // without arguments ...
             }
         } else {
             $this->alias[$name] = $alias;
         }
         return $this;
     }
-    
+
     /**
      * Set grouped columns
      * 
