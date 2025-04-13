@@ -46,7 +46,7 @@ class DataManager implements DataManagerInterface
      * @param  string|null $tablename optional tablename
      * @return array
      */
-    public function getSaveData(string $schema, string $tablename = null) : array
+    public function getSaveData(string $schema, $tablename = null) : array
     {
         $data = $this->inputFilter->getData();
         $reflection = new ReflectionClass($schema);

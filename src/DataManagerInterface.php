@@ -28,7 +28,7 @@ interface DataManagerInterface
      * @param  string|null $tablename optional tablename
      * @return array
      */
-    public function getSaveData(string $schema, string $tablename = null) : array;
+    public function getSaveData(string $schema, $tablename = null) : array;
 
     /**
      * Returns to view data
