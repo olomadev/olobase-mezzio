@@ -62,7 +62,7 @@ interface ColumnFiltersInterface
      * @param array  $columns    column names
      * @param mixed  $returnFunc null|callable
      */
-    public function setGroupedColumns(string $groupName, array $columns, callable $returnFunc = null);
+    public function setGroupedColumns(string $groupName, array $columns, $returnFunc = null);
 
     /**
      * Unset columns
