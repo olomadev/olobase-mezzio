@@ -11,7 +11,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ErrorWrapperFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         return new ErrorWrapper($container->get(TranslatorInterface::class));
     }
