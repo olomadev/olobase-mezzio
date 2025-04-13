@@ -166,7 +166,7 @@ class ColumnFilters implements ColumnFiltersInterface
     public function setGroupedColumns(
         string $groupName,
         array $columns,
-        ?callable $returnFunc = null
+        $returnFunc = null
     ) {
         if (is_null($returnFunc)) {
             $returnFunc = function($val) {
