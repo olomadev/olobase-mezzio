@@ -159,24 +159,23 @@ class ColumnFilters implements ColumnFiltersInterface
     /**
      * Set grouped columns
      * 
-     * @param string $groupName name
-     * @param array  $columns    column names
-     * @param mixed  $returnFunc null|callable
+     * @param string         $groupName  name
+     * @param array          $columns    column names
+     * @param callable|null  $returnFunc null|callable
      */
     public function setGroupedColumns(
         string $groupName,
-        array $columns, 
-        callable $returnFunc = null
-    )
-    {
+        array $columns,
+        callable|null $returnFunc = null
+    ) {
         if (is_null($returnFunc)) {
-            $returnFunc = function($val) { 
-                return (boolean)$val; 
+            $returnFunc = function($val) {
+                return (bool)$val;
             };
         }
         foreach ($columns as $name) {
             $this->groupedColumns[$name] = [
-                'groupName' => $groupName, 
+                'groupName' => $groupName,
                 'callable' => $returnFunc
             ];
         }
