@@ -348,6 +348,7 @@ class ColumnFilters implements ColumnFiltersInterface
         // "between" date filter
         // 
         if (empty($endDateColumnName)) {
+            $dateColumn = Self::removeAlias($dateColumn);
             if (! empty($data[$columnStart]) && empty($data[$columnEnd])) {
                 $nest = $this->select->where->nest();
                     $nest->and->equalTo($dateColumn, $data[$columnStart]);
@@ -587,7 +588,7 @@ class ColumnFilters implements ColumnFiltersInterface
     protected static function removeAlias($key)
     {
         if (is_string($key)) {
-            $key = str_replace(["'","`"], "", $key);
+            $key = str_replace(["'","`",'"'], "", $key);
             if (strpos($key, ".") > 0) {
                 $exp = explode(".", $key);
                 if (is_array($exp) && count($exp) > 0) {
