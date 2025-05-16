@@ -348,7 +348,7 @@ class ColumnFilters implements ColumnFiltersInterface
         // "between" date filter
         // 
         if (empty($endDateColumnName)) {
-            $dateColumn = Self::removeAlias($dateColumn);
+            $dateColumn = Self::removeQuotes($dateColumn);
             if (! empty($data[$columnStart]) && empty($data[$columnEnd])) {
                 $nest = $this->select->where->nest();
                     $nest->and->equalTo($dateColumn, $data[$columnStart]);
@@ -365,9 +365,9 @@ class ColumnFilters implements ColumnFiltersInterface
         } else {  // equality & fixed date filter
             $columnStart = $dateColumn;
             $columnEnd = $endDate;
-            $startKey = Self::removeAlias($columnStart);
-            $endKey = Self::removeAlias($columnEnd);
-            $fixedKey = Self::removeAlias($fixedDate);
+            $startKey = Self::removeQuotes($columnStart);
+            $endKey = Self::removeQuotes($columnEnd);
+            $fixedKey = Self::removeQuotes($fixedDate);
             if ($fixedDate && ! empty($data[$fixedKey])) {
                 $nest = $this->select->where->nest();
                     $nest->and->lessThanOrEqualTo($columnStart, $data[$fixedKey])
@@ -585,16 +585,10 @@ class ColumnFilters implements ColumnFiltersInterface
      * 
      * @param  string $key 
      */
-    protected static function removeAlias($key)
+    protected static function removeQuotes($key)
     {
         if (is_string($key)) {
-            $key = str_replace(["'","`",'"'], "", $key);
-            if (strpos($key, ".") > 0) {
-                $exp = explode(".", $key);
-                if (is_array($exp) && count($exp) > 0) {
-                    $key = end($exp);
-                }
-            }    
+            $key = str_replace(["'","`",'"'], "", $key);   
         }
         return $key;
     }
