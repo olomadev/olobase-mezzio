@@ -213,7 +213,7 @@ class ColumnFilters implements ColumnFiltersInterface
     {
         $searchWords = array();
         if (! empty($data['q']) && strlen($data['q']) > 0) {
-            $searchStr   = urldecode($data['q']);
+            $searchStr = $data['q']; // url decode bug fixed
             $searchWords = explode(' ', $searchStr);
         }
         $this->data = $data;
