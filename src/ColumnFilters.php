@@ -26,6 +26,7 @@ class ColumnFilters implements ColumnFiltersInterface
     protected $searchData = array();
     protected $likeColumns = array();
     protected $whereColumns = array();
+    protected $searchColumns = array();
     protected $likeData = array();
     protected $whereData = array();
     protected $orderData = array();
@@ -53,6 +54,7 @@ class ColumnFilters implements ColumnFiltersInterface
         $this->searchData = array();
         $this->likeColumns = array();
         $this->whereColumns = array();
+        $this->searchColumns = array();
         $this->orderData = array();
         return $this;
     }
@@ -87,6 +89,19 @@ class ColumnFilters implements ColumnFiltersInterface
     {
         foreach ($columns as $name) {
             $this->columns[(string)$name] = (string)$name;
+        }
+        return $this;
+    }
+
+    /**
+     * Set search columns
+     * 
+     * @param array $columns
+     */
+    public function setSearchColumns(array $columns)
+    {
+        foreach ($columns as $name) {
+            $this->searchColumns[(string)$name] = (string)$name;
         }
         return $this;
     }
@@ -147,7 +162,7 @@ class ColumnFilters implements ColumnFiltersInterface
                     $values[0][1]
                 );
                 $this->alias[$name] = vsprintf($values[0][0], $quotedValues);
-            } else if (! empty($values[0]) && is_string($values[0])) {
+            } else if (false == empty($values[0]) && is_string($values[0])) {
                 $this->alias[$name] = $values[0]; // without arguments ...
             }
         } else {
@@ -213,7 +228,7 @@ class ColumnFilters implements ColumnFiltersInterface
     {
         $searchWords = array();
         if (! empty($data['q']) && strlen($data['q']) > 0) {
-            $searchStr = $data['q']; // url decode bug fixed
+            $searchStr = $data['q'];
             $searchWords = explode(' ', $searchStr);
         }
         $this->data = $data;
@@ -221,9 +236,9 @@ class ColumnFilters implements ColumnFiltersInterface
         //
         // Search data
         // 
-        foreach ($this->columns as $name) {
+        foreach ($this->searchColumns as $name) {
             if (! empty($searchWords)) {  // search data for all columns
-                if (isset($this->alias[$name])) { // sql function support
+                if (array_key_exists($name, $this->alias)) { // sql function support
                     $this->searchData[$this->alias[$name]] = $searchWords;
                 } else {
                     $colName = $platform->quoteIdentifier($name);
@@ -255,7 +270,7 @@ class ColumnFilters implements ColumnFiltersInterface
         unset($name);
         foreach ($this->groupedColumns as $name => $props) {
             $groupName = $props['groupName'];
-            if (! empty($data[$groupName]) 
+            if (false == empty($data[$groupName]) 
                 && in_array($name, $data[$groupName])
             ) {
                 $returnClosure = $props['callable'];
@@ -268,7 +283,7 @@ class ColumnFilters implements ColumnFiltersInterface
         if (! empty($data['_sort'])) {
             $o = 0;
             foreach ($data['_sort'] as $colName) {
-                if (! empty($colName) && isset($this->columns[$colName]) && ! empty($data['_order'])) {
+                if (false == empty($colName) && isset($this->columns[$colName]) && false == empty($data['_order'])) {
                     $direction = (strtolower($data['_order'][$o]) == 'asc') ? 'ASC' : 'DESC';
                     $formattedColName = empty($this->alias[$colName]) ? $colName : $this->alias[$colName];
                     $this->orderData[$o] = $formattedColName.' '.$direction;
@@ -477,7 +492,7 @@ class ColumnFilters implements ColumnFiltersInterface
     public function searchDataIsNotEmpty() : bool
     {
         $this->checkSelect();
-        if (! empty($this->searchData)) {
+        if (false == empty($this->searchData)) {
             return true;
         }
         return false;
@@ -519,7 +534,7 @@ class ColumnFilters implements ColumnFiltersInterface
     public function likeDataIsNotEmpty() : bool
     {
         $this->checkSelect();
-        if (! empty($this->likeData)) {
+        if (false == empty($this->likeData)) {
             return true;
         }
         return false;
@@ -546,7 +561,7 @@ class ColumnFilters implements ColumnFiltersInterface
     public function whereDataIsNotEmpty() : bool
     {
         $this->checkSelect();
-        if (! empty($this->whereData)) {
+        if (false == empty($this->whereData)) {
             return true;
         }
         return false;
@@ -574,7 +589,7 @@ class ColumnFilters implements ColumnFiltersInterface
     public function orderDataIsNotEmpty() : bool
     {
         $this->checkSelect();
-        if (! empty($this->orderData)) {
+        if (false == empty($this->orderData)) {
             return true;
         }
         return false;
@@ -612,10 +627,10 @@ class ColumnFilters implements ColumnFiltersInterface
     protected static function normalizeData($data)
     {
         $newData = array();
-        if (is_array($data) && ! empty($data[0]['id'])) {
+        if (is_array($data) && false == empty($data[0]['id'])) {
             $i = 0;
             foreach ($data as $val) {
-                if (! empty($val['id'])) {
+                if (false == empty($val['id'])) {
                   $newData[$i] = $val['id'];
                   ++$i;
                 }
