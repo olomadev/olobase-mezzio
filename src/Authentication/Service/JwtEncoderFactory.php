@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Olobase\Mezzio\Authentication;
+namespace Olobase\Mezzio\Authentication\Service;
 
 use Psr\Container\ContainerInterface;
 use Olobase\Mezzio\Authentication\JwtEncoder;

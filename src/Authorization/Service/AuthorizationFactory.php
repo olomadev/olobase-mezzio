@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Olobase\Mezzio\Authorization;
+namespace Olobase\Mezzio\Authorization\Service;
 
-use Olobase\Mezzio\Authorization\Authorization;
-use Olobase\Mezzio\Authorization\PermissionModelInterface;
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Olobase\Mezzio\Authorization\PermissionModelInterface;
 
 class AuthorizationFactory implements FactoryInterface
 {

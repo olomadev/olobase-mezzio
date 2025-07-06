@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Olobase\Mezzio\Authentication;
+namespace Olobase\Mezzio\Authentication\Service;
 
 /**
  * @author Oloma <support@oloma.dev>

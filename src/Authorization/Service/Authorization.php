@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Olobase\Mezzio\Authorization;
+namespace Olobase\Mezzio\Authorization\Service;
 
 use Mezzio\Authorization\AuthorizationInterface;
 use Mezzio\Authorization\Exception;
