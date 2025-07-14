@@ -135,8 +135,7 @@ class JwtAuthentication implements AuthenticationInterface
         try {
             $result = $this->authAdapter->authenticate();
         } catch (\Throwable $e) {
-            var_dump($e->getPrevious() ?: $e);
-            die;
+            throw $e->getPrevious() ?: $e;
         }
         if (! $result->isValid()) {
             $this->error(Self::USERNAME_OR_PASSWORD_INCORRECT);
