@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Olobase\Mezzio\Authentication\Service;
 
+use Olobase\Mezzio\Authentication\Helper\TokenEncryptHelper;
+use Olobase\Mezzio\Authentication\Service\JwtEncoderInterface;
 use Olobase\Mezzio\Exception\ConfigurationErrorException;
+use Laminas\Cache\Storage\StorageInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class TokenService implements TokenServiceInterface
 {

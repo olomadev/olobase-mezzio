@@ -6,10 +6,10 @@ namespace Olobase\Mezzio\Authentication\Service;
 
 use Common\Helper\RequestHelper;
 use Olobase\Mezzio\Authorization\RoleModelInterface;
-use Authentication\Model\TokenModelInterface;
 use Authentication\EventListener\LoginListener;
 use Laminas\EventManager\EventManagerInterface;
-use Olobase\Mezzio\Authentication\JwtEncoderInterface;
+use Olobase\Mezzio\Authentication\Service\JwtEncoderInterface;
+use Olobase\Mezzio\Authentication\Service\TokenServiceInterface;
 use Olobase\Mezzio\Exception\BadTokenException;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Authentication\Adapter\AdapterInterface;
@@ -51,7 +51,7 @@ class JwtAuthentication implements AuthenticationInterface
     protected $rowObject;
     protected $authAdapter;
     protected $encoder;
-    protected $tokenModel;
+    protected $tokenService;
     protected $roleModel;
     protected $userFactory;
     protected $payload = array();
@@ -63,14 +63,14 @@ class JwtAuthentication implements AuthenticationInterface
         array $config,
         AdapterInterface $authAdapter,
         JwtEncoderInterface $encoder,
-        TokenModelInterface $tokenModel,
+        TokenServiceInterface $tokenService,
         RoleModelInterface $roleModel,
         callable $userFactory
     ) {
         $this->config = $config;
         $this->authAdapter = $authAdapter;
         $this->encoder = $encoder;
-        $this->tokenModel = $tokenModel;
+        $this->tokenService = $tokenService;
         $this->roleModel = $roleModel;
         $this->userFactory = $userFactory;
         $this->ipAddress = RequestHelper::getRealUserIp();
@@ -188,7 +188,7 @@ class JwtAuthentication implements AuthenticationInterface
     private function decryptToken(string $token)
     {
         try {
-            return $this->tokenModel->getTokenEncrypt()->decrypt($token);
+            return $this->tokenService->getTokenEncrypt()->decrypt($token);
         } catch (Exception $e) {
             return null;
         }
@@ -199,7 +199,7 @@ class JwtAuthentication implements AuthenticationInterface
         if ($this->config['token']['validation']['user_ip'] 
             && $this->payload['data']->details->ip != $this->getIpAddress()
         ) {
-            $this->tokenModel->kill(
+            $this->tokenService->kill(
                 $this->payload['data']->id,
                 $this->payload['jti'],
             );
@@ -214,7 +214,7 @@ class JwtAuthentication implements AuthenticationInterface
         if ($this->config['token']['validation']['user_agent'] 
             && $this->payload['data']->details->deviceKey != $this->getDeviceKey($this->request)
         ) {
-            $this->tokenModel->kill(
+            $this->tokenService->kill(
                 $this->payload['data']->id,
                 $this->payload['jti'],
             );
@@ -246,9 +246,9 @@ class JwtAuthentication implements AuthenticationInterface
         return null;
     }
 
-    public function getTokenModel(): TokenModelInterface
+    public function getTokenService(): TokenServiceInterface
     {
-        return $this->tokenModel;
+        return $this->tokenService;
     }
 
     public function getError()

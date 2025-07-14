@@ -7,7 +7,7 @@ namespace Olobase\Mezzio\Authentication\Service;
 use Psr\Http\Message\ServerRequestInterface;
 use Olobase\Mezzio\Authentication\Helper\TokenEncryptHelper;
 
-interface TokenModelInterface
+interface TokenServiceInterface
 {
     /**
      * Decode token
@@ -18,21 +18,23 @@ interface TokenModelInterface
     public function decode(string $token);
     
     /**
-     * Creates a new token for the given request
-     * 
+     * Returns to encoded token with expire date
+     *
      * @param  ServerRequestInterface $request request
+     * @param  integer                 $expiration  user can set expiration value optionally
      * @return array|boolean
      */
-    public function create(ServerRequestInterface $request);
+    public function create(ServerRequestInterface $request, $expiration = null);
 
     /**
      * Refresh token
      * 
      * @param  ServerRequestInterface $request request
-     * @param  array                  $decoded payload
+     * @param  array                  $decoded payload data
+     * @param  integer                $expiration user can set expiration value optionally
      * @return array|boolean
      */
-    public function refresh(ServerRequestInterface $request, array $decoded);
+    public function refresh(ServerRequestInterface $request, array $decoded, $expiration = null);
 
     /**
      * Kill current token for logout operation

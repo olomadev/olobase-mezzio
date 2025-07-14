@@ -22,20 +22,33 @@ final class JwtEncoder implements JwtEncoderInterface
 
     public function __construct(array $config)
     {
-        if (empty($config['public_key']) || empty($config['private_key'])) {
+        $token = $config['token'];
+        if (empty($token['public_key']) || empty($token['private_key'])) {
             throw new JwtEncoderException(
-                "Public or private keys cannot not be empty in token configuration"
+                "Public or private keys cannot not be empty in your token configuration"
             );
         }
-        $this->publicKey = $config['public_key'];
-        $this->privateKey = $config['private_key'];
+        $this->publicKey = $token['public_key'];
+        $this->privateKey = $token['private_key'];
     }
 
+    /**
+     * Encode array data to jwt token string
+     * 
+     * @param  array  $payload    array
+     * @return string
+     */
     public function encode(array $payload): string
     {
         return JWT::encode($payload, $this->privateKey, 'EdDSA');
     }
 
+    /**
+     * Decode token as array
+     * 
+     * @param  string $token     token
+     * @return array
+     */
     public function decode(string $token): array
     {
         JWT::$leeway = 60;
