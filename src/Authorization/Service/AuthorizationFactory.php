@@ -6,7 +6,7 @@ namespace Olobase\Mezzio\Authorization\Service;
 
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Olobase\Mezzio\Authorization\PermissionModelInterface;
+use Olobase\Contracts\Authorization\PermissionModelInterface;
 
 class AuthorizationFactory implements FactoryInterface
 {

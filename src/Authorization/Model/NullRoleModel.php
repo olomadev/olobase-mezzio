@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Olobase\Mezzio\Authorization;
+namespace Olobase\Mezzio\Authorization\Model;
 
 use Laminas\Paginator\Paginator;
+use Laminas\Paginator\Adapter\ArrayAdapter;
+use Olobase\Mezzio\Authorization\Contracts\RoleModelInterface;
 
-interface RoleModelInterface
+class NullRoleModel implements RoleModelInterface
 {
     /**
      * Find roles assigned to a user by their userId.
@@ -14,14 +16,22 @@ interface RoleModelInterface
      * @param string $userId User ID
      * @return array List of role keys
      */
-    public function findRolesByUserId(string $userId): array;
+    public function findRolesByUserId(string $userId): array
+    {
+        return array(
+            'user',
+        );
+    }
 
     /**
      * Find all available roles for selection.
      *
      * @return array List of roles
      */
-    public function findAll(): ?array;
+    public function findAll(): ?array
+    {
+        return array();
+    }
     
     /**
      * Find a role by its roleId.
@@ -29,7 +39,10 @@ interface RoleModelInterface
      * @param string $roleId Role ID
      * @return array Role details with permissions
      */
-    public function findOneById(string $roleId);
+    public function findOneById(string $roleId)
+    {
+        return false;
+    }
 
     /**
      * Find all roles by pagination
@@ -37,7 +50,11 @@ interface RoleModelInterface
      * @param  array  $get query string
      * @return Laminas\Paginator\Paginator
      */
-    public function findAllByPaging(array $get) : Paginator;
+    public function findAllByPaging(array $get) : Paginator
+    {
+        $paginatorAdapter = new ArrayAdapter([]);
+        return new Paginator($paginatorAdapter);
+    }
 
     /**
      * Create a new role and its associated permissions.
@@ -45,7 +62,10 @@ interface RoleModelInterface
      * @param array $data Role and permission data
      * @return void
      */
-    public function create(array $data) : void;
+    public function create(array $data) : void
+    {
+        return;
+    }
 
     /**
      * Update an existing role and its associated permissions.
@@ -53,7 +73,10 @@ interface RoleModelInterface
      * @param array $data Role and permission data
      * @return void
      */
-    public function update(array $data) : void;
+    public function update(array $data) : void
+    {
+        return;
+    }
 
     /**
      * Delete a role by its roleId.
@@ -61,5 +84,8 @@ interface RoleModelInterface
      * @param string $roleId Role ID
      * @return void
      */
-    public function delete(string $roleId) : void;
+    public function delete(string $roleId) : void
+    {
+        return;
+    }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Olobase\Mezzio;
+namespace Olobase\Mezzio\DataTable;
 
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\SqlInterface;

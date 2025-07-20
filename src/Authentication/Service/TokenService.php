@@ -9,6 +9,8 @@ use Olobase\Mezzio\Authentication\Service\JwtEncoderInterface;
 use Olobase\Mezzio\Exception\ConfigurationErrorException;
 use Laminas\Cache\Storage\StorageInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Mezzio\Authentication\UserInterface;
+use Common\Helper\RequestHelper;
 
 class TokenService implements TokenServiceInterface
 {
@@ -39,7 +41,7 @@ class TokenService implements TokenServiceInterface
      */
     public function getSessionKey(): string
     {
-        return CACHE_ROOT_KEY . self::SESSION_KEY;
+        return APP_CACHE_PREFIX . self::SESSION_KEY;
     }
 
     /**
@@ -96,10 +98,13 @@ class TokenService implements TokenServiceInterface
             $expire,
             $issuer
         ) = $this->generateHeader($request, $expiration);
+
+        $userDetails = $user->getDetails();
+        unset($userDetails['avatar']);
         //
         // Generate user data
         //
-        $details = array_merge($user->getDetails(), [
+        $details = array_merge($userDetails, [
             'tokenId' => $tokenId,
             'email' => $user->getDetail('email') ?? $user->getIdentity(),
             'ip' => RequestHelper::getRealUserIp(),

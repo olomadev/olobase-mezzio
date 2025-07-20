@@ -123,7 +123,7 @@ class JwtAuthentication implements AuthenticationInterface
 
     private function checkUserInactive() : bool
     {
-        if (empty($this->rowObject->isActive)) {
+        if (empty($this->rowObject->is_active)) {
             $this->error(Self::ACCOUNT_IS_INACTIVE_OR_SUSPENDED);
             return true;
         }
@@ -160,8 +160,8 @@ class JwtAuthentication implements AuthenticationInterface
             'id' => $this->rowObject->id,
             'email' => $this->rowObject->email,
             'fullname' => (string)$this->rowObject->firstname.' '.(string)$this->rowObject->lastname,
-            'avatar' => $this->rowObject->avatar 
-                ? "data:{$this->rowObject->mime_type};base64,{$this->rowObject->avatar}" 
+            'avatar' => $this->rowObject->avatar_image
+                ? "data:{$this->rowObject->mime_type};base64,{$this->rowObject->avatar_image}" 
                 : null,
             'ip' => $this->getIpAddress(),
             'deviceKey' => $this->getDeviceKey($this->request),

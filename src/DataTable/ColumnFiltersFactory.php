@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Olobase\Mezzio;
+namespace Olobase\Mezzio\DataTable;
 
 use Olobase\Mezzio\ColumnFilters;
 use Laminas\Db\Adapter\AdapterInterface;
@@ -13,7 +13,6 @@ class ColumnFiltersFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        $adapter = $container->get(AdapterInterface::class);
-        return new ColumnFilters($adapter);
+        return new ColumnFilters($container->get(AdapterInterface::class));
     }
 }
