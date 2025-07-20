@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Olobase\Contracts\Authorization\Contracts;
+namespace Olobase\Mezzio\Authorization\Contracts;
 
 use Laminas\Paginator\Paginator;
 

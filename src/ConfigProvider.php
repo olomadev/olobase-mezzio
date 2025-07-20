@@ -6,8 +6,8 @@ namespace Olobase\Mezzio;
 
 use Mezzio\Application;
 use Psr\Container\ContainerInterface;
-use Olobase\Mezzio\Authentication\Contracts\RoleModelInterface;
-use Olobase\Mezzio\Authentication\Contracts\PermissionModelInterface;
+use Olobase\Mezzio\Authorization\Contracts\RoleModelInterface;
+use Olobase\Mezzio\Authorization\Contracts\PermissionModelInterface;
 use Olobase\Mezzio\Authorization\Model\NullRoleModel;
 use Olobase\Mezzio\Authorization\Model\NullPermissionModel;
 use Olobase\Mezzio\Router\AttributeRouteCollector;

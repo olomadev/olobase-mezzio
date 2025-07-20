@@ -12,7 +12,7 @@ use RecursiveDirectoryIterator;
 use ReflectionClass;
 use RegexIterator;
 use RecursiveRegexIterator;
-use Common\Attribute\Route;
+use Olobase\Mezzio\Attribute\Route;
 
 class AttributeRouteCollector implements AttributeRouteProviderInterface
 {

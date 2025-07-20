@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Olobase\Mezzio\Authentication\Service;
 
 use Common\Helper\RequestHelper;
-use Olobase\Mezzio\Authorization\RoleModelInterface;
+use Olobase\Mezzio\Authorization\Contracts\RoleModelInterface;
 use Authentication\EventListener\LoginListener;
 use Laminas\EventManager\EventManagerInterface;
 use Olobase\Mezzio\Authentication\Service\JwtEncoderInterface;
