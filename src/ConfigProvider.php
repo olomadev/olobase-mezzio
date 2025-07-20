@@ -26,6 +26,9 @@ class ConfigProvider
     public function __invoke()
     {
         return [
+            'schema_mapper' => [
+                'common_schema_module' => 'Common',
+            ],
             'dependencies' => $this->getDependencyConfig(),
         ];
     }
